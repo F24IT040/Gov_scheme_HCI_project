@@ -21,11 +21,17 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
   color: var(--ink);
   background-color: var(--canvas);
+  overflow-x: hidden;
 }
 
 .app-shell {
@@ -42,6 +48,145 @@ body {
   border: 1px solid rgba(220, 161, 161, .25);
   box-shadow: 0 20px 44px rgba(15, 23, 42, .06), inset 0 1px 0 rgba(255,255,255,.8);
   backdrop-filter: blur(18px);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #D86D00 0%, #F58B14 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-glass {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-input {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-input-focus {
+  box-shadow: 0 4px 12px rgba(220, 161, 161, 0.15), inset 0 0 0 1px rgba(220, 161, 161, 0.6);
+}
+
+.shadow-float-hover:hover {
+  box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.08);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+.bg-grain,
+.bg-orbs,
+.bg-grid,
+.bg-lines,
+#cursor-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -10;
+}
+
+.bg-grain {
+  opacity: 0.32;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.bg-orbs {
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  animation: blob 15s infinite alternate ease-in-out;
+}
+
+.orb-1 {
+  top: -12%;
+  left: -10%;
+  width: 52vw;
+  height: 52vw;
+  background: rgba(220, 161, 161, 0.12);
+}
+
+.orb-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 62vw;
+  height: 62vw;
+  background: rgba(184, 119, 119, 0.1);
+  animation-delay: -5s;
+}
+
+.orb-3 {
+  top: 18%;
+  right: 12%;
+  width: 44vw;
+  height: 44vw;
+  background: rgba(245, 158, 11, 0.04);
+  animation-delay: -9s;
+}
+
+.bg-grid {
+  opacity: 0.55;
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 35%, black 16%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, black 16%, transparent 78%);
+}
+
+.bg-lines {
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  opacity: 0.8;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-100,300 C200,150 400,650 1200,200' fill='none' stroke='%23dca1a1' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Cpath d='M-100,320 C220,170 420,670 1220,220' fill='none' stroke='%23b87777' stroke-width='1' stroke-opacity='0.2'/%3E%3Cpath d='M-100,340 C240,190 440,690 1240,240' fill='none' stroke='%238b5cf6' stroke-width='0.5' stroke-opacity='0.08'/%3E%3Cpath d='M-100,360 C260,210 460,710 1260,260' fill='none' stroke='%23dca1a1' stroke-width='0.5' stroke-opacity='0.1'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 50%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 50%, transparent 90%);
+}
+
+#cursor-glow {
+  top: 10%;
+  left: 40%;
+  width: 600px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(220, 161, 161, 0.16) 0%, rgba(220, 161, 161, 0) 60%);
+  opacity: 1;
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  100% { transform: translate(30px, -40px) scale(1.08); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-16px); }
 }
 
 .brand-mark {

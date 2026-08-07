@@ -7,16 +7,42 @@ import DetailPanel from './components/DetailPanel';
 import EmptyState from './components/EmptyState';
 import SearchForm from './components/SearchForm';
 import RightSidebar from './components/RightSidebar';
+import ProcessPage from './components/ProcessPage';
+import LandingPage from './components/LandingPage';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
+import TypingIndicator from './components/TypingIndicator';
 
 const RIGHT_SIDEBAR_MIN_WIDTH = 320;
 const RIGHT_SIDEBAR_MAX_WIDTH = 560;
 const RIGHT_SIDEBAR_EXPANDED_WIDTH = 448;
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
+// Page order for back-navigation
+const PAGE_STACK = ['landing', 'login', 'register', 'app'];
+
 export default function App() {
+  // Initialise login state from localStorage (remember-me)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('nayanta_logged_in') === '1';
+  });
+
+  // Start on app if already logged in, otherwise landing
+  const [page, setPageState] = useState(() => {
+    return localStorage.getItem('nayanta_logged_in') === '1' ? 'app' : 'landing';
+  });
+
+  // Wrap setPage so every navigation pushes a history entry
+  const setPage = (nextPage) => {
+    window.history.pushState({ page: nextPage }, '', window.location.pathname);
+    setPageState(nextPage);
+  };
+
+  const [pendingQuery, setPendingQuery] = useState('');
   const [queryInput, setQueryInput] = useState('');
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectedScheme, setSelectedScheme] = useState(null);
+  const [viewMode, setViewMode] = useState('results');
   const [rightSidebarWidth, setRightSidebarWidth] = useState(RIGHT_SIDEBAR_MIN_WIDTH);
   const [isResizingRightSidebar, setIsResizingRightSidebar] = useState(false);
   const [chatTurns, setChatTurns] = useState([]);
@@ -25,7 +51,26 @@ export default function App() {
   const rightSidebarResizeRef = useRef({ startX: 0, startWidth: RIGHT_SIDEBAR_MIN_WIDTH });
   const turnIdRef = useRef(0);
 
+  // Handle browser back/forward buttons — stay inside the SPA
+  useEffect(() => {
+    // Push an initial state so back has somewhere to go
+    window.history.replaceState({ page }, '', window.location.pathname);
+
+    const onPopState = (e) => {
+      if (e.state && e.state.page) {
+        setPageState(e.state.page);
+      } else {
+        // No state means we've gone past the beginning — go to landing
+        setPageState('landing');
+        window.history.replaceState({ page: 'landing' }, '', window.location.pathname);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []); // eslint-disable-line
+
   const resetView = () => {
+    setViewMode('results');
     setQueryInput('');
     setActiveCategory(null);
     setSelectedScheme(null);
@@ -37,6 +82,7 @@ export default function App() {
     const query = rawQuery.trim();
     if (!query) return;
 
+    setViewMode('results');
     setSelectedScheme(null);
     setQueryInput('');
     const turnId = ++turnIdRef.current;
@@ -51,7 +97,6 @@ export default function App() {
         id: turnId,
         query,
         summary: '',
-        answer: '',
         schemes: [],
         suggestions: [],
         isSingle: false,
@@ -93,7 +138,6 @@ export default function App() {
             ? {
                 ...turn,
                 summary: data?.summary || primaryScheme?.summary || '',
-                answer: data?.answer || '',
                 schemes: normalizedSchemes,
                 suggestions: Array.isArray(data?.suggestions) ? data.suggestions : [],
                 isSingle: normalizedSchemes.length <= 1,
@@ -117,7 +161,6 @@ export default function App() {
                 ...turn,
                 loading: false,
                 error: error.message || 'Something went wrong while searching',
-                answer: '',
                 isEmpty: true
               }
             : turn
@@ -136,6 +179,15 @@ export default function App() {
 
   const handleSelectScheme = (scheme) => {
     setSelectedScheme((prev) => (prev?.id === scheme.id ? null : scheme));
+  };
+
+  const handleViewProcess = (scheme) => {
+    setSelectedScheme(scheme);
+    setViewMode('process');
+  };
+
+  const handleBackToResults = () => {
+    setViewMode('results');
   };
 
   const handleFormSubmit = (e) => {
@@ -171,6 +223,22 @@ export default function App() {
     }
   }, [chatTurns, selectedScheme]);
 
+  // Fire pending query when we arrive at the app page
+  const pendingQueryRef = useRef('');
+  useEffect(() => {
+    pendingQueryRef.current = pendingQuery;
+  }, [pendingQuery]);
+
+  useEffect(() => {
+    if (page === 'app' && pendingQueryRef.current) {
+      const q = pendingQueryRef.current;
+      pendingQueryRef.current = '';
+      setPendingQuery('');
+      // small delay so the app shell renders before the search fires
+      setTimeout(() => handleSearch(q), 50);
+    }
+  }, [page]);
+
   useEffect(() => {
     if (!isResizingRightSidebar) return;
 
@@ -202,6 +270,54 @@ export default function App() {
     };
   }, [isResizingRightSidebar]);
 
+  const handleSignIn = () => setPage('login');
+  const handleStartNow = () => setPage('app');
+  const handleRegister = () => setPage('register');
+
+  // Called after login or registration succeeds
+  // remember=true → persist across refresh; false → session only
+  const handleLoginSuccess = (remember = false) => {
+    setIsLoggedIn(true);
+    if (remember) {
+      localStorage.setItem('nayanta_logged_in', '1');
+    } else {
+      localStorage.removeItem('nayanta_logged_in');
+    }
+    setPage('app');
+  };
+
+  // Logout helper (clears persistence)
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('nayanta_logged_in');
+    setPage('landing');
+  };
+
+  // Called when a category card is clicked on the landing page
+  const handleCardClick = (query) => {
+    if (isLoggedIn) {
+      // Already logged in — go straight to chat and fire the query
+      setPage('app');
+      setPendingQuery(query);
+    } else {
+      // Not logged in — save query, send to login
+      setPendingQuery(query);
+      setPage('login');
+    }
+  };
+
+  if (page === 'landing') {
+    return <LandingPage onSignIn={handleSignIn} onStartNow={handleStartNow} onCardClick={handleCardClick} />;
+  }
+
+  if (page === 'login') {
+    return <LoginPage onBack={() => setPage('landing')} onLogin={(remember) => handleLoginSuccess(remember)} onRegister={handleRegister} />;
+  }
+
+  if (page === 'register') {
+    return <RegisterPage onBack={() => setPage('login')} onSubmit={() => handleLoginSuccess(false)} onLogin={() => setPage('login')} />;
+  }
+
   return (
     <div className="app-shell flex w-full">
       {/* Left Sidebar */}
@@ -209,17 +325,23 @@ export default function App() {
         onNewSearch={resetView}
         onCategorySelect={handleCategorySelect}
         activeCategory={activeCategory}
+        onLogout={handleLogout}
       />
 
       {/* Main Container */}
       <main className="flex min-w-0 flex-1 flex-col h-full">
-        <section
-          ref={chatContainerRef}
-          className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
-        >
+        {viewMode === 'process' ? (
+          <section className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8">
+            <ProcessPage scheme={selectedScheme} onBack={handleBackToResults} />
+          </section>
+        ) : (
+          <section
+            ref={chatContainerRef}
+            className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
+          >
           <div className="mx-auto w-full max-w-4xl">
-            {/* Hero Welcome */}
-            <WelcomeHero />
+            {/* Hero Welcome — only show when no turns yet */}
+            {chatTurns.length === 0 && <WelcomeHero onSelectPrompt={handleSearch} />}
 
             {/* Conversation Flow */}
             <div id="conversation" className="space-y-5" aria-live="polite">
@@ -227,21 +349,11 @@ export default function App() {
                 <div key={turn.id} className="space-y-4">
                   <QueryBubble query={turn.query} />
 
-                  {turn.loading && (
-                    <div className="glass-panel rounded-2xl px-4 py-3 text-sm text-slate-600">
-                      Looking up the best matching scheme...
-                    </div>
-                  )}
+                  {turn.loading && <TypingIndicator />}
 
                   {!turn.loading && turn.error && (
                     <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                       {turn.error}
-                    </div>
-                  )}
-
-                  {!turn.loading && !turn.error && turn.answer && (
-                    <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-7 text-slate-700 shadow-sm">
-                      {turn.answer}
                     </div>
                   )}
 
@@ -251,6 +363,7 @@ export default function App() {
                       schemes={turn.schemes}
                       selectedSchemeId={selectedScheme?.id}
                       onSelectScheme={handleSelectScheme}
+                      onViewProcess={handleViewProcess}
                       onClearResults={resetView}
                       isSingle={turn.isSingle}
                       suggestions={turn.suggestions}
@@ -258,7 +371,7 @@ export default function App() {
                     />
                   )}
 
-                  {!turn.loading && !turn.error && turn.isEmpty && !turn.answer && (
+                  {!turn.loading && !turn.error && turn.isEmpty && turn.suggestions.length === 0 && (
                     <EmptyState message={turn.summary} />
                   )}
                 </div>
@@ -274,6 +387,7 @@ export default function App() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Footer Prompt & Input Form */}
         <SearchForm

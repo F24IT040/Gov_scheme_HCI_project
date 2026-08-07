@@ -78,7 +78,7 @@ export default function SearchForm({ value, onChange, onSubmit, onSelectPrompt }
       <div className="mx-auto w-full max-w-4xl">
         <QuickPrompts onSelectPrompt={onSelectPrompt} />
 
-        <form id="query-form" onSubmit={onSubmit} className="glass-panel flex items-end gap-2 rounded-2xl p-2">
+        <form id="query-form" onSubmit={onSubmit} className="glass-panel flex items-center gap-2 rounded-2xl p-2">
           <label htmlFor="scheme-query" className="sr-only">
             Ask about government schemes
           </label>
@@ -102,7 +102,7 @@ export default function SearchForm({ value, onChange, onSubmit, onSelectPrompt }
           </button>
           <button
             type="submit"
-            className="canva-button flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition hover:brightness-95 active:scale-95"
+            className="canva-button flex h-11 w-11 shrink-0 self-center items-center justify-center rounded-xl text-white transition hover:brightness-95 active:scale-95"
             aria-label="Send search query"
             style={{ background: 'var(--brand-500)', color: 'rgb(255, 255, 255)' }}
           >

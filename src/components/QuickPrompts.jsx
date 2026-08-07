@@ -1,39 +1,25 @@
 import React from 'react';
 
-export default function QuickPrompts({ onSelectPrompt }) {
-  const prompts = [
-    { id: "prompt-scholarships", text: "I am a student. I want scholarship" },
-    { id: "prompt-pmkisan", text: "Tell me about PM-Kisan" }
-  ];
+const PROMPTS = [
+  { id: 'p1', emoji: '🎓', text: 'I am a student. I want scholarship' },
+  { id: 'p2', emoji: '🌾', text: 'Tell me about PM-Kisan' },
+  { id: 'p3', emoji: '🏠', text: 'How to apply for PM Awas Yojana?' },
+  { id: 'p4', emoji: '💊', text: 'Ayushman Bharat health scheme' },
+  { id: 'p5', emoji: '👩', text: 'Women empowerment schemes' },
+];
 
+export default function QuickPrompts({ onSelectPrompt }) {
   return (
-    <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
-      {prompts.map((p) => (
+    <div className="mb-3 flex gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+      {PROMPTS.map((p) => (
         <button
           key={p.id}
-          id={p.id}
           type="button"
           onClick={() => onSelectPrompt(p.text)}
-          className="canva-button whitespace-nowrap rounded-full border px-3 py-2 text-sm font-medium transition"
-          style={{
-            background: 'rgb(255, 255, 255)',
-            color: 'var(--brand-600)',
-            borderColor: 'var(--brand-100)',
-            fontWeight: 500,
-            fontStyle: 'normal',
-            fontSize: '14px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'var(--brand-50)';
-            e.currentTarget.style.color = 'var(--brand-600)';
-            e.currentTarget.style.borderColor = 'var(--brand-100)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgb(255, 255, 255)';
-            e.currentTarget.style.color = 'var(--brand-600)';
-            e.currentTarget.style.borderColor = 'var(--brand-100)';
-          }}
+          className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[13px] font-medium transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 active:scale-95"
+          style={{ color: 'var(--brand-600)' }}
         >
+          <span>{p.emoji}</span>
           {p.text}
         </button>
       ))}
