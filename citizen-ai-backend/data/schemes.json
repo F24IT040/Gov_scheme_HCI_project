@@ -1,0 +1,1851 @@
+[
+  {
+    "id": 1,
+    "name": "MahaDBT Scholarship",
+    "state": "Maharashtra",
+    "category": "Student",
+    "incomeLimit": 800000,
+    "documents": [
+      "Aadhaar Card",
+      "Income Certificate",
+      "Caste Certificate",
+      "Bonafide Certificate"
+    ],
+    "website": "https://mahadbt.maharashtra.gov.in"
+  },
+  {
+    "id": 2,
+    "name": "PM Scholarship",
+    "state": "All India",
+    "category": "Student",
+    "incomeLimit": 1000000,
+    "documents": [
+      "Aadhaar Card",
+      "Income Certificate",
+      "Marksheet"
+    ],
+    "website": "https://scholarships.gov.in"
+  },
+  {
+    "id": "cache_1786101915271",
+    "scheme_name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "eligibility": [
+      "Small and marginal farmers having cultivable land",
+      "Agricultural households with cultivable land"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Bank account passbook",
+      "Land ownership documents"
+    ],
+    "timeline": [
+      "Applications accepted throughout the year"
+    ],
+    "process_steps": [
+      "Apply online through the PM-KISAN portal or mobile app",
+      "Fill in the required details and upload documents"
+    ],
+    "dos_and_donts": [
+      "Ensure all details are accurate and up-to-date",
+      "Keep the required documents ready"
+    ],
+    "benefits": [
+      "Rs. 6,000 per annum in three equal installments"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://pmkisan.gov.in/",
+    "search_terms": [
+      "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+      "https://pmkisan.gov.in/",
+      "i am farmer",
+      "Small and marginal farmers having cultivable land",
+      "Agricultural households with cultivable land",
+      "Aadhaar card",
+      "Bank account passbook",
+      "Land ownership documents",
+      "Applications accepted throughout the year",
+      "Apply online through the PM-KISAN portal or mobile app",
+      "Fill in the required details and upload documents",
+      "Ensure all details are accurate and up-to-date",
+      "Keep the required documents ready",
+      "Rs. 6,000 per annum in three equal installments"
+    ],
+    "source_query": "i am farmer",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:25:15.274Z",
+    "state": "",
+    "category": "",
+    "application_process": [
+      "Online application through the PM-KISAN portal or mobile app"
+    ]
+  },
+  {
+    "id": "cache_1786090580171",
+    "scheme_name": "Panjabrao Deshmukh Hostel Scheme",
+    "eligibility": [
+      "Students belonging to Scheduled Castes (SC) and Nav Buddha (Converted) categories",
+      "Family income not exceeding 2.5 lacs per annum"
+    ],
+    "required_documents": [
+      "Caste certificate",
+      "Income certificate",
+      "Admission proof",
+      "Residence proof"
+    ],
+    "timeline": [
+      "Scheme open throughout the year",
+      "Applications to be submitted in June/July for the new academic session"
+    ],
+    "process_steps": [
+      "Submission of online application",
+      "Verification of documents",
+      "Sanction of hostel seats"
+    ],
+    "dos_and_donts": [
+      "Applicants must ensure eligibility before applying",
+      "Incomplete applications will be rejected"
+    ],
+    "benefits": [
+      "Free hostel accommodation",
+      "Financial assistance for food and other expenses"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://socialjustice.gov.in",
+    "search_terms": [
+      "Panjabrao Deshmukh Hostel Scheme",
+      "https://socialjustice.gov.in",
+      "tell me about panjabrao deshmukh scheme",
+      "Students belonging to Scheduled Castes (SC) and Nav Buddha (Converted) categories",
+      "Family income not exceeding 2.5 lacs per annum",
+      "Caste certificate",
+      "Income certificate",
+      "Admission proof",
+      "Residence proof",
+      "Scheme open throughout the year",
+      "Applications to be submitted in June/July for the new academic session",
+      "Submission of online application",
+      "Verification of documents",
+      "Sanction of hostel seats",
+      "Applicants must ensure eligibility before applying",
+      "Incomplete applications will be rejected",
+      "Free hostel accommodation",
+      "Financial assistance for food and other expenses"
+    ],
+    "source_query": "tell me about panjabrao deshmukh scheme",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T08:16:20.173Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786091412590",
+    "scheme_name": "Prime Minister's Employment Generation Programme (PMEGP)",
+    "eligibility": [
+      "Age above 18 years",
+      "VIII standard pass required",
+      "Special preference for SC, ST, OBC, Physically Disabled, Ex-servicemen and North Eastern Region candidates"
+    ],
+    "required_documents": [
+      "Identity Proof",
+      "Address Proof",
+      "Caste Certificate",
+      "Income Certificate",
+      "Qualification Certificate"
+    ],
+    "timeline": [
+      "Project report preparation: 1 month",
+      "Application submission to bank: 2 months",
+      "Loan sanction: 3 months"
+    ],
+    "process_steps": [
+      "Prepare project report",
+      "Submit application to bank or Lender Institution",
+      "Get loan sanctioned"
+    ],
+    "dos_and_donts": [
+      "Fill the form correctly",
+      "Attach required documents",
+      "Ensure business plan feasibility"
+    ],
+    "benefits": [
+      "Subsidy up to 25-35%",
+      "Employment generation",
+      "Entrepreneurial growth"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.kviconline.gov.in/pmegp/pmegpindex.jsp",
+    "search_terms": [
+      "Prime Minister's Employment Generation Programme (PMEGP)",
+      "https://www.kviconline.gov.in/pmegp/pmegpindex.jsp",
+      "i lost my business",
+      "Age above 18 years",
+      "VIII standard pass required",
+      "Special preference for SC, ST, OBC, Physically Disabled, Ex-servicemen and North Eastern Region candidates",
+      "Identity Proof",
+      "Address Proof",
+      "Caste Certificate",
+      "Income Certificate",
+      "Qualification Certificate",
+      "Project report preparation: 1 month",
+      "Application submission to bank: 2 months",
+      "Loan sanction: 3 months",
+      "Prepare project report",
+      "Submit application to bank or Lender Institution",
+      "Get loan sanctioned",
+      "Fill the form correctly",
+      "Attach required documents",
+      "Ensure business plan feasibility",
+      "Subsidy up to 25-35%",
+      "Employment generation",
+      "Entrepreneurial growth"
+    ],
+    "source_query": "i lost my business",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T08:30:12.592Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786091412590",
+    "scheme_name": "Micro Units Development and Refinance Agency (MUDRA) Scheme",
+    "eligibility": [
+      "Age above 18 years",
+      "Indian citizen",
+      "Business plan"
+    ],
+    "required_documents": [
+      "Business plan",
+      "Identity Proof",
+      "Address Proof"
+    ],
+    "timeline": [
+      "Application processing: 1-2 weeks",
+      "Loan disbursement: 2-4 weeks"
+    ],
+    "process_steps": [
+      "Prepare business plan",
+      "Approach MUDRA partner bank or financial institution",
+      "Submit application with required documents"
+    ],
+    "dos_and_donts": [
+      "Prepare a viable business plan",
+      "Provide accurate information",
+      "Ensure timely repayment"
+    ],
+    "benefits": [
+      "Collateral free loan",
+      "Low interest rate",
+      "Credit guarantee"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.mudra.org.in/",
+    "search_terms": [
+      "Micro Units Development and Refinance Agency (MUDRA) Scheme",
+      "https://www.mudra.org.in/",
+      "i lost my business",
+      "Age above 18 years",
+      "Indian citizen",
+      "Business plan",
+      "Identity Proof",
+      "Address Proof",
+      "Application processing: 1-2 weeks",
+      "Loan disbursement: 2-4 weeks",
+      "Prepare business plan",
+      "Approach MUDRA partner bank or financial institution",
+      "Submit application with required documents",
+      "Prepare a viable business plan",
+      "Provide accurate information",
+      "Ensure timely repayment",
+      "Collateral free loan",
+      "Low interest rate",
+      "Credit guarantee"
+    ],
+    "source_query": "i lost my business",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T08:30:12.601Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786108377390",
+    "scheme_name": "National Scholarship Portal",
+    "eligibility": [
+      "Student should be above 80th percentile in the relevant stream"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate"
+    ],
+    "timeline": [
+      "Apply between August and November"
+    ],
+    "process_steps": [
+      "Register on NSP portal",
+      "Fill application form",
+      "Upload documents"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Ensure correct documents"
+    ],
+    "benefits": [
+      "Financial assistance to students"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://scholarships.gov.in/",
+    "search_terms": [
+      "National Scholarship Portal",
+      "https://scholarships.gov.in/",
+      "I am a student. I want scholarship",
+      "Student should be above 80th percentile in the relevant stream",
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate",
+      "Apply between August and November",
+      "Register on NSP portal",
+      "Fill application form",
+      "Upload documents",
+      "Apply before deadline",
+      "Ensure correct documents",
+      "Financial assistance to students"
+    ],
+    "source_query": "I am a student. I want scholarship",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T13:12:57.395Z",
+    "state": "",
+    "category": "",
+    "application_process": [
+      "Online application through NSP portal"
+    ]
+  },
+  {
+    "id": "cache_1786104290650",
+    "scheme_name": "Pradhan Mantri Vidya Lakshmi Karyakram (PMVLK)",
+    "eligibility": [
+      "Student pursuing higher education",
+      "Family income below a certain threshold"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Income certificate",
+      "Caste certificate"
+    ],
+    "timeline": [
+      "Application period: July to October"
+    ],
+    "process_steps": [
+      "Registration on NSP portal",
+      "Filling application form",
+      "Uploading documents"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Ensure correct information"
+    ],
+    "benefits": [
+      "Interest subsidy on education loans"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://vidyalakshmi.co.in/Students/",
+    "search_terms": [
+      "Pradhan Mantri Vidya Lakshmi Karyakram (PMVLK)",
+      "https://vidyalakshmi.co.in/Students/",
+      "i am student",
+      "Student pursuing higher education",
+      "Family income below a certain threshold",
+      "Aadhaar card",
+      "Income certificate",
+      "Caste certificate",
+      "Application period: July to October",
+      "Registration on NSP portal",
+      "Filling application form",
+      "Uploading documents",
+      "Apply before deadline",
+      "Ensure correct information",
+      "Interest subsidy on education loans"
+    ],
+    "source_query": "i am student",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T12:04:50.672Z",
+    "state": "",
+    "category": "",
+    "application_process": [
+      "Online application through NSP portal"
+    ]
+  },
+  {
+    "id": "cache_1786101915271",
+    "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "eligibility": [
+      "Farmers growing notified crops",
+      "Farmers having a crop loan account or a savings account with a bank"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Bank account passbook",
+      "Land ownership documents",
+      "Crop details"
+    ],
+    "timeline": [
+      "Applications accepted during the crop season"
+    ],
+    "process_steps": [
+      "Apply online through the PMFBY portal or mobile app",
+      "Fill in the required details and upload documents"
+    ],
+    "dos_and_donts": [
+      "Read and understand the policy terms",
+      "Ensure timely payment of premiums"
+    ],
+    "benefits": [
+      "Financial protection against crop losses due to natural calamities"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://pmfby.gov.in/",
+    "search_terms": [
+      "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+      "https://pmfby.gov.in/",
+      "i am farmer",
+      "Farmers growing notified crops",
+      "Farmers having a crop loan account or a savings account with a bank",
+      "Aadhaar card",
+      "Bank account passbook",
+      "Land ownership documents",
+      "Crop details",
+      "Applications accepted during the crop season",
+      "Apply online through the PMFBY portal or mobile app",
+      "Fill in the required details and upload documents",
+      "Read and understand the policy terms",
+      "Ensure timely payment of premiums",
+      "Financial protection against crop losses due to natural calamities"
+    ],
+    "source_query": "i am farmer",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:25:15.286Z",
+    "state": "",
+    "category": "",
+    "application_process": [
+      "Online application through the PMFBY portal or mobile app"
+    ]
+  },
+  {
+    "id": "cache_1786097924466",
+    "scheme_name": "Central Scheme of Interest Subsidy for Education Loans",
+    "eligibility": [
+      "Indian National",
+      "Pursuing professional or technical courses from recognized institutions in India or abroad"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Admission proof",
+      "Fee structure",
+      "Loan application"
+    ],
+    "timeline": [
+      "Loan application submission during admission",
+      "Interest subsidy disbursal after loan sanction"
+    ],
+    "process_steps": [
+      "Apply for education loan from scheduled bank",
+      "Submit required documents to bank",
+      "Bank verifies eligibility and sanctions loan"
+    ],
+    "dos_and_donts": [
+      "Apply for loan from scheduled bank only",
+      "Submit all required documents on time"
+    ],
+    "benefits": [
+      "Interest subsidy on education loan",
+      "Financial assistance for professional or technical courses"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://www.mhrd.gov.in/",
+    "search_terms": [
+      "Central Scheme of Interest Subsidy for Education Loans",
+      "https://www.mhrd.gov.in/",
+      "Student loan schemes",
+      "Indian National",
+      "Pursuing professional or technical courses from recognized institutions in India or abroad",
+      "Income certificate",
+      "Admission proof",
+      "Fee structure",
+      "Loan application",
+      "Loan application submission during admission",
+      "Interest subsidy disbursal after loan sanction",
+      "Apply for education loan from scheduled bank",
+      "Submit required documents to bank",
+      "Bank verifies eligibility and sanctions loan",
+      "Apply for loan from scheduled bank only",
+      "Submit all required documents on time",
+      "Interest subsidy on education loan",
+      "Financial assistance for professional or technical courses"
+    ],
+    "source_query": "Student loan schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:18:44.469Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786097924467",
+    "scheme_name": "Padho Pardesh Scheme",
+    "eligibility": [
+      "Minority community students",
+      "Pursuing higher education abroad"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Admission proof",
+      "Fee structure",
+      "Loan application"
+    ],
+    "timeline": [
+      "Loan application submission during admission",
+      "Interest subsidy disbursal after loan sanction"
+    ],
+    "process_steps": [
+      "Apply for education loan from scheduled bank",
+      "Submit required documents to bank",
+      "Bank verifies eligibility and sanctions loan"
+    ],
+    "dos_and_donts": [
+      "Apply for loan from scheduled bank only",
+      "Submit all required documents on time"
+    ],
+    "benefits": [
+      "Interest subsidy on education loan",
+      "Financial assistance for higher education abroad"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.minorityaffairs.gov.in/",
+    "search_terms": [
+      "Padho Pardesh Scheme",
+      "https://www.minorityaffairs.gov.in/",
+      "Student loan schemes",
+      "Minority community students",
+      "Pursuing higher education abroad",
+      "Income certificate",
+      "Admission proof",
+      "Fee structure",
+      "Loan application",
+      "Loan application submission during admission",
+      "Interest subsidy disbursal after loan sanction",
+      "Apply for education loan from scheduled bank",
+      "Submit required documents to bank",
+      "Bank verifies eligibility and sanctions loan",
+      "Apply for loan from scheduled bank only",
+      "Submit all required documents on time",
+      "Interest subsidy on education loan",
+      "Financial assistance for higher education abroad"
+    ],
+    "source_query": "Student loan schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:18:44.480Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786097934889",
+    "scheme_name": "Rashtriya Sanskrit Sansthan Scheme",
+    "eligibility": [
+      "Students pursuing Sanskrit courses"
+    ],
+    "required_documents": [
+      "Admission proof",
+      "Income certificate",
+      "Caste certificate"
+    ],
+    "timeline": [
+      "Application submission between April to June"
+    ],
+    "process_steps": [
+      "Online application",
+      "Document verification",
+      "Sansthan selection"
+    ],
+    "dos_and_donts": [
+      "Apply through official portal only",
+      "Check eligibility before applying"
+    ],
+    "benefits": [
+      "Hostel accommodation",
+      "Monthly stipend"
+    ],
+    "confidence_score": 0.8,
+    "official_url": "https://www.sanskrit.nic.in/",
+    "search_terms": [
+      "Rashtriya Sanskrit Sansthan Scheme",
+      "https://www.sanskrit.nic.in/",
+      "Student housing support",
+      "Students pursuing Sanskrit courses",
+      "Admission proof",
+      "Income certificate",
+      "Caste certificate",
+      "Application submission between April to June",
+      "Online application",
+      "Document verification",
+      "Sansthan selection",
+      "Apply through official portal only",
+      "Check eligibility before applying",
+      "Hostel accommodation",
+      "Monthly stipend"
+    ],
+    "source_query": "Student housing support",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:18:54.893Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786108377390",
+    "scheme_name": "Meritorious Student Scholarship",
+    "eligibility": [
+      "Student should have secured 60% marks in previous exam"
+    ],
+    "required_documents": [
+      "Mark sheet",
+      "Income certificate"
+    ],
+    "timeline": [
+      "Apply between April and July"
+    ],
+    "process_steps": [
+      "Fill application form",
+      "Upload documents"
+    ],
+    "dos_and_donts": [
+      "Apply through institution",
+      "Ensure correct documents"
+    ],
+    "benefits": [
+      "Financial assistance to meritorious students"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.ugc.ac.in/",
+    "search_terms": [
+      "Meritorious Student Scholarship",
+      "https://www.ugc.ac.in/",
+      "I am a student. I want scholarship",
+      "Student should have secured 60% marks in previous exam",
+      "Mark sheet",
+      "Income certificate",
+      "Apply between April and July",
+      "Fill application form",
+      "Upload documents",
+      "Apply through institution",
+      "Ensure correct documents",
+      "Financial assistance to meritorious students"
+    ],
+    "source_query": "I am a student. I want scholarship",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T13:12:57.425Z",
+    "state": "",
+    "category": "",
+    "application_process": [
+      "Offline application through institution"
+    ]
+  },
+  {
+    "id": "cache_1786098399551",
+    "scheme_name": "Per Drop More Crop",
+    "eligibility": [
+      "Small and marginal farmers",
+      "Farmers with less than 2 hectares of land"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Land ownership documents",
+      "Bank account details"
+    ],
+    "timeline": [
+      "Varies by state",
+      "Typically 3-6 months"
+    ],
+    "process_steps": [
+      "Online application",
+      "Field verification",
+      "Sanction and disbursal"
+    ],
+    "dos_and_donts": [
+      "Apply through official portal",
+      "Ensure accurate documentation",
+      "Follow up with local authorities"
+    ],
+    "benefits": [
+      "Financial assistance for micro-irrigation systems",
+      "Improved water use efficiency",
+      "Increased crop productivity"
+    ],
+    "confidence_score": 0.7,
+    "official_url": "https://agricoop.gov.in/",
+    "search_terms": [
+      "Per Drop More Crop",
+      "https://agricoop.gov.in/",
+      "Irrigation support schemes",
+      "Small and marginal farmers",
+      "Farmers with less than 2 hectares of land",
+      "Aadhaar card",
+      "Land ownership documents",
+      "Bank account details",
+      "Varies by state",
+      "Typically 3-6 months",
+      "Online application",
+      "Field verification",
+      "Sanction and disbursal",
+      "Apply through official portal",
+      "Ensure accurate documentation",
+      "Follow up with local authorities",
+      "Financial assistance for micro-irrigation systems",
+      "Improved water use efficiency",
+      "Increased crop productivity"
+    ],
+    "source_query": "Irrigation support schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:26:39.568Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786098361908",
+    "scheme_name": "Crop Loan Scheme under NABARD",
+    "eligibility": [
+      "Small and marginal farmers",
+      "Sharecroppers"
+    ],
+    "required_documents": [
+      "Land ownership documents",
+      "Crop insurance documents"
+    ],
+    "timeline": [
+      "Valid for 1 year",
+      "Can be renewed"
+    ],
+    "process_steps": [
+      "Apply through bank",
+      "Submit documents",
+      "Get loan sanctioned"
+    ],
+    "dos_and_donts": [
+      "Use loan for crop cultivation only",
+      "Repay loan on time"
+    ],
+    "benefits": [
+      "Concessional interest rate",
+      "Easy repayment terms"
+    ],
+    "confidence_score": 0.7,
+    "official_url": "https://www.nabard.org/",
+    "search_terms": [
+      "Crop Loan Scheme under NABARD",
+      "https://www.nabard.org/",
+      "Crop loan schemes",
+      "Small and marginal farmers",
+      "Sharecroppers",
+      "Land ownership documents",
+      "Crop insurance documents",
+      "Valid for 1 year",
+      "Can be renewed",
+      "Apply through bank",
+      "Submit documents",
+      "Get loan sanctioned",
+      "Use loan for crop cultivation only",
+      "Repay loan on time",
+      "Concessional interest rate",
+      "Easy repayment terms"
+    ],
+    "source_query": "Crop loan schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:26:01.916Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786098379956",
+    "scheme_name": "Rashtriya Krishi Vikas Yojana",
+    "eligibility": [
+      "Small and marginal farmers",
+      "Women farmers",
+      "Scheduled Caste and Scheduled Tribe farmers"
+    ],
+    "required_documents": [
+      "Caste certificate",
+      "Income certificate",
+      "Bank account details"
+    ],
+    "timeline": [
+      "Application submission: April to June",
+      "Verification and approval: July to September",
+      "Disbursement of subsidy: October to December"
+    ],
+    "process_steps": [
+      "Visit the official website of the State Department of Agriculture",
+      "Fill the online application form",
+      "Upload required documents",
+      "Submit the application"
+    ],
+    "dos_and_donts": [
+      "Ensure all documents are in order before applying",
+      "Apply within the specified timeline",
+      "Do not submit fake documents"
+    ],
+    "benefits": [
+      "Subsidy up to 75% of the cost of farm equipment",
+      "Increased agricultural productivity",
+      "Improved livelihood of farmers"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://rkvy.nic.in/",
+    "search_terms": [
+      "Rashtriya Krishi Vikas Yojana",
+      "https://rkvy.nic.in/",
+      "Farm equipment subsidies",
+      "Small and marginal farmers",
+      "Women farmers",
+      "Scheduled Caste and Scheduled Tribe farmers",
+      "Caste certificate",
+      "Income certificate",
+      "Bank account details",
+      "Application submission: April to June",
+      "Verification and approval: July to September",
+      "Disbursement of subsidy: October to December",
+      "Visit the official website of the State Department of Agriculture",
+      "Fill the online application form",
+      "Upload required documents",
+      "Submit the application",
+      "Ensure all documents are in order before applying",
+      "Apply within the specified timeline",
+      "Do not submit fake documents",
+      "Subsidy up to 75% of the cost of farm equipment",
+      "Increased agricultural productivity",
+      "Improved livelihood of farmers"
+    ],
+    "source_query": "Farm equipment subsidies",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:26:19.972Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786098412555",
+    "scheme_name": "Pradhan Mantri Kisan Maan-Dhan Yojana",
+    "eligibility": [
+      "Small and marginal farmers",
+      "Age between 18 and 40 years",
+      "Cultivable land up to 2 hectares"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Bank account details",
+      "Land records"
+    ],
+    "timeline": [
+      "Registration at Common Service Centre (CSC)",
+      "Contribution period of 20 years",
+      "Pension disbursal at 60 years of age"
+    ],
+    "process_steps": [
+      "Visit nearest CSC",
+      "Fill application form",
+      "Submit required documents"
+    ],
+    "dos_and_donts": [
+      "Regularly contribute to the pension fund",
+      "Update bank account and land records"
+    ],
+    "benefits": [
+      "Minimum monthly pension of Rs. 3,000",
+      "Government contribution to match farmer's contribution"
+    ],
+    "confidence_score": 0.8,
+    "official_url": "https://pmkmy.gov.in/",
+    "search_terms": [
+      "Pradhan Mantri Kisan Maan-Dhan Yojana",
+      "https://pmkmy.gov.in/",
+      "Farmer welfare pensions",
+      "Small and marginal farmers",
+      "Age between 18 and 40 years",
+      "Cultivable land up to 2 hectares",
+      "Aadhaar card",
+      "Bank account details",
+      "Land records",
+      "Registration at Common Service Centre (CSC)",
+      "Contribution period of 20 years",
+      "Pension disbursal at 60 years of age",
+      "Visit nearest CSC",
+      "Fill application form",
+      "Submit required documents",
+      "Regularly contribute to the pension fund",
+      "Update bank account and land records",
+      "Minimum monthly pension of Rs. 3,000",
+      "Government contribution to match farmer's contribution"
+    ],
+    "source_query": "Farmer welfare pensions",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:26:52.557Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786099087316",
+    "scheme_name": "Beti Bachao Beti Padhao",
+    "eligibility": [
+      "Girl child below 10 years of age",
+      "Family having a minimum of one girl child"
+    ],
+    "required_documents": [
+      "Birth certificate of the girl child",
+      "Aadhaar card of the parent/guardian",
+      "Bank account details of the parent/guardian"
+    ],
+    "timeline": [
+      "The scheme is open throughout the year",
+      "No specific deadline for application"
+    ],
+    "process_steps": [
+      "Open a Sukanya Samriddhi Account in the name of the girl child",
+      "Deposit a minimum of Rs. 1000 in the account",
+      "Maximum deposit limit is Rs. 1.5 lakh per year"
+    ],
+    "application_process": [
+      "Apply online through the official website",
+      "Visit the nearest bank branch or post office"
+    ],
+    "dos_and_donts": [
+      "Ensure the girl child's name is correctly spelled",
+      "Do not withdraw money from the account until maturity"
+    ],
+    "benefits": [
+      "Interest rate of 7.6% per annum",
+      "Tax exemption under Section 80C of the Income Tax Act",
+      "Maturity amount can be used for the girl child's education or marriage"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.wcd.nic.in/scheme/beti-bachao-beti-padhao",
+    "search_terms": [
+      "Beti Bachao Beti Padhao",
+      "https://www.wcd.nic.in/scheme/beti-bachao-beti-padhao",
+      "i am women",
+      "Girl child below 10 years of age",
+      "Family having a minimum of one girl child",
+      "Birth certificate of the girl child",
+      "Aadhaar card of the parent/guardian",
+      "Bank account details of the parent/guardian",
+      "The scheme is open throughout the year",
+      "No specific deadline for application",
+      "Open a Sukanya Samriddhi Account in the name of the girl child",
+      "Deposit a minimum of Rs. 1000 in the account",
+      "Maximum deposit limit is Rs. 1.5 lakh per year",
+      "Ensure the girl child's name is correctly spelled",
+      "Do not withdraw money from the account until maturity",
+      "Interest rate of 7.6% per annum",
+      "Tax exemption under Section 80C of the Income Tax Act",
+      "Maturity amount can be used for the girl child's education or marriage"
+    ],
+    "source_query": "i am women",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:38:07.318Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786099087317",
+    "scheme_name": "Mahila Shakti Kendra Scheme",
+    "eligibility": [
+      "Women above 18 years of age",
+      "Belonging to rural or urban areas"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Proof of address",
+      "Proof of age"
+    ],
+    "timeline": [
+      "The scheme is open throughout the year",
+      "No specific deadline for application"
+    ],
+    "process_steps": [
+      "Visit the nearest Mahila Shakti Kendra",
+      "Register for the scheme",
+      "Attend training and skilling programs"
+    ],
+    "application_process": [
+      "Apply in person at the Mahila Shakti Kendra",
+      "No online application available"
+    ],
+    "dos_and_donts": [
+      "Ensure regular attendance in training programs",
+      "Do not share personal details with unauthorized persons"
+    ],
+    "benefits": [
+      "Training and skilling in various fields",
+      "Financial assistance for self-employment",
+      "Health and nutrition support"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.msje.gov.in/scheme/mahila-shakti-kendra",
+    "search_terms": [
+      "Mahila Shakti Kendra Scheme",
+      "https://www.msje.gov.in/scheme/mahila-shakti-kendra",
+      "i am women",
+      "Women above 18 years of age",
+      "Belonging to rural or urban areas",
+      "Aadhaar card",
+      "Proof of address",
+      "Proof of age",
+      "The scheme is open throughout the year",
+      "No specific deadline for application",
+      "Visit the nearest Mahila Shakti Kendra",
+      "Register for the scheme",
+      "Attend training and skilling programs",
+      "Ensure regular attendance in training programs",
+      "Do not share personal details with unauthorized persons",
+      "Training and skilling in various fields",
+      "Financial assistance for self-employment",
+      "Health and nutrition support"
+    ],
+    "source_query": "i am women",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:38:07.327Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786099549035",
+    "scheme_name": "Central Sector Scheme of Scholarship",
+    "eligibility": [
+      "Merit-based",
+      "Income-based"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Income certificate",
+      "Marksheet"
+    ],
+    "timeline": [
+      "June to October"
+    ],
+    "process_steps": [
+      "Registration",
+      "Application submission",
+      "Verification"
+    ],
+    "application_process": [
+      "Online application"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Fill correct information"
+    ],
+    "benefits": [
+      "Financial assistance"
+    ],
+    "confidence_score": 0.8,
+    "official_url": "https://www.mhrd.gov.in/scholarships",
+    "search_terms": [
+      "Central Sector Scheme of Scholarship",
+      "https://www.mhrd.gov.in/scholarships",
+      "Scholarship schemes",
+      "Merit-based",
+      "Income-based",
+      "Aadhaar card",
+      "Income certificate",
+      "Marksheet",
+      "June to October",
+      "Registration",
+      "Application submission",
+      "Verification",
+      "Apply before deadline",
+      "Fill correct information",
+      "Financial assistance"
+    ],
+    "source_query": "Scholarship schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T10:45:49.055Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786100426741",
+    "scheme_name": "Beti Bachao Beti Padhao",
+    "eligibility": [
+      "Girls below 10 years of age"
+    ],
+    "required_documents": [
+      "Birth certificate",
+      "Aadhaar card"
+    ],
+    "timeline": [
+      "Ongoing"
+    ],
+    "process_steps": [
+      "Opening of Sukanya Samriddhi Account"
+    ],
+    "application_process": [
+      "Online/Offline at authorized banks/post offices"
+    ],
+    "dos_and_donts": [
+      "Use authorized banks/post offices only"
+    ],
+    "benefits": [
+      "High interest rate",
+      "Tax benefits"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://wcd.nic.in/beti-bachao-beti-padhao-scheme",
+    "search_terms": [
+      "Beti Bachao Beti Padhao",
+      "https://wcd.nic.in/beti-bachao-beti-padhao-scheme",
+      "women empowerment schemes name",
+      "Girls below 10 years of age",
+      "Birth certificate",
+      "Aadhaar card",
+      "Ongoing",
+      "Opening of Sukanya Samriddhi Account",
+      "Use authorized banks/post offices only",
+      "High interest rate",
+      "Tax benefits"
+    ],
+    "source_query": "women empowerment schemes name",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:00:26.742Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786100426741",
+    "scheme_name": "Ujjawala Scheme",
+    "eligibility": [
+      "Victims of trafficking for commercial sexual exploitation"
+    ],
+    "required_documents": [
+      "Identification documents",
+      "Proof of trafficking"
+    ],
+    "timeline": [
+      "Ongoing"
+    ],
+    "process_steps": [
+      "Identification and rescue",
+      "Rehabilitation"
+    ],
+    "application_process": [
+      "Through NGOs/ Government organizations"
+    ],
+    "dos_and_donts": [
+      "Report to authorities immediately"
+    ],
+    "benefits": [
+      "Rehabilitation",
+      "Financial assistance"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.nhrc.nic.in/ujjawala-scheme",
+    "search_terms": [
+      "Ujjawala Scheme",
+      "https://www.nhrc.nic.in/ujjawala-scheme",
+      "women empowerment schemes name",
+      "Victims of trafficking for commercial sexual exploitation",
+      "Identification documents",
+      "Proof of trafficking",
+      "Ongoing",
+      "Identification and rescue",
+      "Rehabilitation",
+      "Report to authorities immediately",
+      "Financial assistance"
+    ],
+    "source_query": "women empowerment schemes name",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:00:26.751Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786100426741",
+    "scheme_name": "Mahila Shakti Kendra Scheme",
+    "eligibility": [
+      "Rural women"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Identification documents"
+    ],
+    "timeline": [
+      "Ongoing"
+    ],
+    "process_steps": [
+      "Formation of block level committees"
+    ],
+    "application_process": [
+      "Through Anganwadi workers/ local officials"
+    ],
+    "dos_and_donts": [
+      "Actively participate in community activities"
+    ],
+    "benefits": [
+      "Training and capacity building",
+      "Financial assistance"
+    ],
+    "confidence_score": 88,
+    "official_url": "https://www.msje.gov.in/schemes/mahila-shakti-kendra",
+    "search_terms": [
+      "Mahila Shakti Kendra Scheme",
+      "https://www.msje.gov.in/schemes/mahila-shakti-kendra",
+      "women empowerment schemes name",
+      "Rural women",
+      "Aadhaar card",
+      "Identification documents",
+      "Ongoing",
+      "Formation of block level committees",
+      "Actively participate in community activities",
+      "Training and capacity building",
+      "Financial assistance"
+    ],
+    "source_query": "women empowerment schemes name",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:00:26.759Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786100426741",
+    "scheme_name": "Working Women Hostel Scheme",
+    "eligibility": [
+      "Working women with income below Rs. 50,000"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Proof of employment"
+    ],
+    "timeline": [
+      "Ongoing"
+    ],
+    "process_steps": [
+      "Application to local authorities"
+    ],
+    "application_process": [
+      "Offline application"
+    ],
+    "dos_and_donts": [
+      "Follow hostel rules and regulations"
+    ],
+    "benefits": [
+      "Subsidized accommodation",
+      "Safety and security"
+    ],
+    "confidence_score": 92,
+    "official_url": "https://www.wcd.nic.in/working-women-hostel-scheme",
+    "search_terms": [
+      "Working Women Hostel Scheme",
+      "https://www.wcd.nic.in/working-women-hostel-scheme",
+      "women empowerment schemes name",
+      "Working women with income below Rs. 50,000",
+      "Income certificate",
+      "Proof of employment",
+      "Ongoing",
+      "Application to local authorities",
+      "Follow hostel rules and regulations",
+      "Subsidized accommodation",
+      "Safety and security"
+    ],
+    "source_query": "women empowerment schemes name",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:00:26.768Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786101915271",
+    "scheme_name": "Soil Health Card Scheme",
+    "eligibility": [
+      "All farmers in the country"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Land ownership documents"
+    ],
+    "timeline": [
+      "Applications accepted throughout the year"
+    ],
+    "process_steps": [
+      "Apply online through the Soil Health Card portal or mobile app",
+      "Fill in the required details and upload documents"
+    ],
+    "application_process": [
+      "Online application through the Soil Health Card portal or mobile app"
+    ],
+    "dos_and_donts": [
+      "Ensure accurate and up-to-date information",
+      "Follow the recommended soil testing and treatment protocols"
+    ],
+    "benefits": [
+      "Soil health cards to help farmers improve soil fertility and crop productivity"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://soilhealth.dac.gov.in/",
+    "search_terms": [
+      "Soil Health Card Scheme",
+      "https://soilhealth.dac.gov.in/",
+      "i am farmer",
+      "All farmers in the country",
+      "Aadhaar card",
+      "Land ownership documents",
+      "Applications accepted throughout the year",
+      "Apply online through the Soil Health Card portal or mobile app",
+      "Fill in the required details and upload documents",
+      "Ensure accurate and up-to-date information",
+      "Follow the recommended soil testing and treatment protocols",
+      "Soil health cards to help farmers improve soil fertility and crop productivity"
+    ],
+    "source_query": "i am farmer",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:25:15.294Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786101915271",
+    "scheme_name": "National Mission for Sustainable Agriculture (NMSA)",
+    "eligibility": [
+      "Small and marginal farmers",
+      "Agricultural households with cultivable land"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Land ownership documents"
+    ],
+    "timeline": [
+      "Applications accepted throughout the year"
+    ],
+    "process_steps": [
+      "Apply online through the NMSA portal or mobile app",
+      "Fill in the required details and upload documents"
+    ],
+    "application_process": [
+      "Online application through the NMSA portal or mobile app"
+    ],
+    "dos_and_donts": [
+      "Ensure accurate and up-to-date information",
+      "Follow the recommended sustainable agricultural practices"
+    ],
+    "benefits": [
+      "Promoting sustainable agricultural practices and climate-resilient farming"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://nmsa.dac.gov.in/",
+    "search_terms": [
+      "National Mission for Sustainable Agriculture (NMSA)",
+      "https://nmsa.dac.gov.in/",
+      "i am farmer",
+      "Small and marginal farmers",
+      "Agricultural households with cultivable land",
+      "Aadhaar card",
+      "Land ownership documents",
+      "Applications accepted throughout the year",
+      "Apply online through the NMSA portal or mobile app",
+      "Fill in the required details and upload documents",
+      "Ensure accurate and up-to-date information",
+      "Follow the recommended sustainable agricultural practices",
+      "Promoting sustainable agricultural practices and climate-resilient farming"
+    ],
+    "source_query": "i am farmer",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:25:15.300Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102471102",
+    "scheme_name": "Beti Bachao Beti Padhao",
+    "eligibility": [
+      "Girls below 10 years of age",
+      "Family having a bank account"
+    ],
+    "required_documents": [
+      "Birth certificate of the girl child",
+      "Aadhaar card of the parent/guardian",
+      "Bank account details"
+    ],
+    "timeline": [
+      "Can be enrolled at any time",
+      "Maturity period is 21 years"
+    ],
+    "process_steps": [
+      "Open a Sukanya Samriddhi Account in a bank or post office",
+      "Submit required documents",
+      "Deposit a minimum of Rs. 1000"
+    ],
+    "application_process": [
+      "Offline application at bank or post office"
+    ],
+    "dos_and_donts": [
+      "Ensure the account is in the name of the girl child",
+      "Maximum of 2 accounts per family"
+    ],
+    "benefits": [
+      "High interest rate",
+      "Tax benefits",
+      "Secure future for the girl child"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://www.wcd.nic.in/schemes/beti-bachao-beti-padhao",
+    "search_terms": [
+      "Beti Bachao Beti Padhao",
+      "https://www.wcd.nic.in/schemes/beti-bachao-beti-padhao",
+      "women empowerment schemes",
+      "Girls below 10 years of age",
+      "Family having a bank account",
+      "Birth certificate of the girl child",
+      "Aadhaar card of the parent/guardian",
+      "Bank account details",
+      "Can be enrolled at any time",
+      "Maturity period is 21 years",
+      "Open a Sukanya Samriddhi Account in a bank or post office",
+      "Submit required documents",
+      "Deposit a minimum of Rs. 1000",
+      "Ensure the account is in the name of the girl child",
+      "Maximum of 2 accounts per family",
+      "High interest rate",
+      "Tax benefits",
+      "Secure future for the girl child"
+    ],
+    "source_query": "women empowerment schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:34:31.105Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102471102",
+    "scheme_name": "Mahila Shakti Kendra Scheme",
+    "eligibility": [
+      "Rural areas",
+      "Women in the age group of 18-45 years"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Ration card",
+      "Income certificate"
+    ],
+    "timeline": [
+      "Till March 2026"
+    ],
+    "process_steps": [
+      "Apply through the District Level Centre for Women"
+    ],
+    "application_process": [
+      "Offline application at District Level Centre for Women"
+    ],
+    "dos_and_donts": [
+      "Ensure the applicant is a resident of the rural area"
+    ],
+    "benefits": [
+      "Training and capacity building",
+      "Community engagement",
+      "Leadership development"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.wcd.nic.in/schemes/mahila-shakti-kendra-scheme",
+    "search_terms": [
+      "Mahila Shakti Kendra Scheme",
+      "https://www.wcd.nic.in/schemes/mahila-shakti-kendra-scheme",
+      "women empowerment schemes",
+      "Rural areas",
+      "Women in the age group of 18-45 years",
+      "Aadhaar card",
+      "Ration card",
+      "Income certificate",
+      "Till March 2026",
+      "Apply through the District Level Centre for Women",
+      "Ensure the applicant is a resident of the rural area",
+      "Training and capacity building",
+      "Community engagement",
+      "Leadership development"
+    ],
+    "source_query": "women empowerment schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:34:31.116Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102471102",
+    "scheme_name": "Ujjawala Scheme",
+    "eligibility": [
+      "Victims of trafficking for commercial sexual exploitation"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Ration card",
+      "Medical certificate"
+    ],
+    "timeline": [
+      "Till the victim is rehabilitated"
+    ],
+    "process_steps": [
+      "Apply through the State Government",
+      "Get a referral from a registered organization"
+    ],
+    "application_process": [
+      "Offline application through the State Government"
+    ],
+    "dos_and_donts": [
+      "Ensure the applicant is a victim of trafficking"
+    ],
+    "benefits": [
+      "Shelter",
+      "Counseling",
+      "Rehabilitation"
+    ],
+    "confidence_score": 80,
+    "official_url": "https://www.wcd.nic.in/schemes/ujjawala-scheme",
+    "search_terms": [
+      "Ujjawala Scheme",
+      "https://www.wcd.nic.in/schemes/ujjawala-scheme",
+      "women empowerment schemes",
+      "Victims of trafficking for commercial sexual exploitation",
+      "Aadhaar card",
+      "Ration card",
+      "Medical certificate",
+      "Till the victim is rehabilitated",
+      "Apply through the State Government",
+      "Get a referral from a registered organization",
+      "Ensure the applicant is a victim of trafficking",
+      "Shelter",
+      "Counseling",
+      "Rehabilitation"
+    ],
+    "source_query": "women empowerment schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:34:31.124Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102471103",
+    "scheme_name": "Pradhan Mantri Matru Vandana Yojana",
+    "eligibility": [
+      "Pregnant and lactating women above 19 years of age"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Bank account details",
+      "Pregnancy proof"
+    ],
+    "timeline": [
+      "During pregnancy and lactation period"
+    ],
+    "process_steps": [
+      "Apply at the Anganwadi Centre or online",
+      "Submit required documents"
+    ],
+    "application_process": [
+      "Online and offline application"
+    ],
+    "dos_and_donts": [
+      "Ensure the applicant is pregnant or lactating"
+    ],
+    "benefits": [
+      "Cash incentive of Rs. 5000",
+      "Improved health and nutrition"
+    ],
+    "confidence_score": 95,
+    "official_url": "https://www.pmmvy-cas.nic.in/",
+    "search_terms": [
+      "Pradhan Mantri Matru Vandana Yojana",
+      "https://www.pmmvy-cas.nic.in/",
+      "women empowerment schemes",
+      "Pregnant and lactating women above 19 years of age",
+      "Aadhaar card",
+      "Bank account details",
+      "Pregnancy proof",
+      "During pregnancy and lactation period",
+      "Apply at the Anganwadi Centre or online",
+      "Submit required documents",
+      "Ensure the applicant is pregnant or lactating",
+      "Cash incentive of Rs. 5000",
+      "Improved health and nutrition"
+    ],
+    "source_query": "women empowerment schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:34:31.132Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102471103",
+    "scheme_name": "National Mission for Empowerment of Women",
+    "eligibility": [
+      "Women above 18 years of age"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Ration card"
+    ],
+    "timeline": [
+      "Till the mission goals are achieved"
+    ],
+    "process_steps": [
+      "Apply through the State Government",
+      "Get a referral from a registered organization"
+    ],
+    "application_process": [
+      "Offline application through the State Government"
+    ],
+    "dos_and_donts": [
+      "Ensure the applicant is a woman above 18 years"
+    ],
+    "benefits": [
+      "Skill development",
+      "Training and capacity building",
+      "Economic empowerment"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.wcd.nic.in/schemes/national-mission-empowerment-women-nmew",
+    "search_terms": [
+      "National Mission for Empowerment of Women",
+      "https://www.wcd.nic.in/schemes/national-mission-empowerment-women-nmew",
+      "women empowerment schemes",
+      "Women above 18 years of age",
+      "Aadhaar card",
+      "Ration card",
+      "Till the mission goals are achieved",
+      "Apply through the State Government",
+      "Get a referral from a registered organization",
+      "Ensure the applicant is a woman above 18 years",
+      "Skill development",
+      "Training and capacity building",
+      "Economic empowerment"
+    ],
+    "source_query": "women empowerment schemes",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:34:31.140Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786108377390",
+    "scheme_name": "Central Sector Scheme of Scholarship for College and University Students",
+    "eligibility": [
+      "Student should be above 80th percentile in the relevant stream"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate",
+      "Mark sheet"
+    ],
+    "timeline": [
+      "Apply between June and October"
+    ],
+    "process_steps": [
+      "Register on NSP portal",
+      "Fill application form",
+      "Upload documents"
+    ],
+    "application_process": [
+      "Online application through NSP portal"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Ensure correct documents"
+    ],
+    "benefits": [
+      "Financial assistance to students"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.education.gov.in/",
+    "search_terms": [
+      "Central Sector Scheme of Scholarship for College and University Students",
+      "https://www.education.gov.in/",
+      "I am a student. I want scholarship",
+      "Student should be above 80th percentile in the relevant stream",
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate",
+      "Mark sheet",
+      "Apply between June and October",
+      "Register on NSP portal",
+      "Fill application form",
+      "Upload documents",
+      "Apply before deadline",
+      "Ensure correct documents",
+      "Financial assistance to students"
+    ],
+    "source_query": "I am a student. I want scholarship",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T13:12:57.412Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786102510642",
+    "scheme_name": "Pradhan Mantri Kaushal Vikas Yojana (PMKVY)",
+    "eligibility": [
+      "Dropout students",
+      "Students aged 15-35 years"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Age proof",
+      "Address proof"
+    ],
+    "timeline": [
+      "Application period: Throughout the year",
+      "Training and certification: Variable duration"
+    ],
+    "process_steps": [
+      "Registration",
+      "Training and certification",
+      "Placement assistance"
+    ],
+    "application_process": [
+      "Online application through PMKVY portal"
+    ],
+    "dos_and_donts": [
+      "Choose a recognized training center",
+      "Complete the training program"
+    ],
+    "benefits": [
+      "Skill training and certification",
+      "Placement assistance"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.pmkvy.gov.in/",
+    "search_terms": [
+      "Pradhan Mantri Kaushal Vikas Yojana (PMKVY)",
+      "https://www.pmkvy.gov.in/",
+      "i am student",
+      "Dropout students",
+      "Students aged 15-35 years",
+      "Aadhaar card",
+      "Age proof",
+      "Address proof",
+      "Application period: Throughout the year",
+      "Training and certification: Variable duration",
+      "Registration",
+      "Training and certification",
+      "Placement assistance",
+      "Choose a recognized training center",
+      "Complete the training program",
+      "Skill training and certification"
+    ],
+    "source_query": "i am student",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T11:35:10.657Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786104290650",
+    "scheme_name": "National Means-cum-Merit Scholarship Scheme",
+    "eligibility": [
+      "Student studying in class 9 to 12",
+      "Family income below a certain threshold"
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Income certificate",
+      "Caste certificate"
+    ],
+    "timeline": [
+      "Application period: November to December"
+    ],
+    "process_steps": [
+      "Registration on NSP portal",
+      "Filling application form",
+      "Uploading documents"
+    ],
+    "application_process": [
+      "Online application through NSP portal"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Ensure correct information"
+    ],
+    "benefits": [
+      "Financial assistance for secondary education"
+    ],
+    "confidence_score": 85,
+    "official_url": "https://www.education.gov.in/scholarships",
+    "search_terms": [
+      "National Means-cum-Merit Scholarship Scheme",
+      "https://www.education.gov.in/scholarships",
+      "i am student",
+      "Student studying in class 9 to 12",
+      "Family income below a certain threshold",
+      "Aadhaar card",
+      "Income certificate",
+      "Caste certificate",
+      "Application period: November to December",
+      "Registration on NSP portal",
+      "Filling application form",
+      "Uploading documents",
+      "Apply before deadline",
+      "Ensure correct information",
+      "Financial assistance for secondary education"
+    ],
+    "source_query": "i am student",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T12:04:50.693Z",
+    "state": "",
+    "category": ""
+  },
+  {
+    "id": "cache_1786108377391",
+    "scheme_name": "Saksham Scholarship Scheme for Differently Abled Students",
+    "eligibility": [
+      "Differently abled student pursuing technical education"
+    ],
+    "required_documents": [
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate",
+      "Mark sheet",
+      "Disability certificate"
+    ],
+    "timeline": [
+      "Apply between September and December"
+    ],
+    "process_steps": [
+      "Register on AICTE portal",
+      "Fill application form",
+      "Upload documents"
+    ],
+    "application_process": [
+      "Online application through AICTE portal"
+    ],
+    "dos_and_donts": [
+      "Apply before deadline",
+      "Ensure correct documents"
+    ],
+    "benefits": [
+      "Financial assistance to differently abled students pursuing technical education"
+    ],
+    "confidence_score": 90,
+    "official_url": "https://www.aicte-india.org/",
+    "search_terms": [
+      "Saksham Scholarship Scheme for Differently Abled Students",
+      "https://www.aicte-india.org/",
+      "I am a student. I want scholarship",
+      "Differently abled student pursuing technical education",
+      "Income certificate",
+      "Caste certificate",
+      "Domicile certificate",
+      "Mark sheet",
+      "Disability certificate",
+      "Apply between September and December",
+      "Register on AICTE portal",
+      "Fill application form",
+      "Upload documents",
+      "Apply before deadline",
+      "Ensure correct documents",
+      "Financial assistance to differently abled students pursuing technical education"
+    ],
+    "source_query": "I am a student. I want scholarship",
+    "source": "groq_live",
+    "cached_at": "2026-08-07T13:12:57.441Z",
+    "state": "",
+    "category": ""
+  }
+]
