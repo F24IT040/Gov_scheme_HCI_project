@@ -1,12 +1,75 @@
-import React from 'react';
-import { Send } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Send, Mic } from 'lucide-react';
 import QuickPrompts from './QuickPrompts';
 
 export default function SearchForm({ value, onChange, onSubmit, onSelectPrompt }) {
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+  const currentValueRef = useRef(value);
+
+  useEffect(() => {
+    currentValueRef.current = value;
+  }, [value]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0]?.transcript || '')
+        .join(' ')
+        .trim();
+
+      if (transcript) {
+        const nextValue = currentValueRef.current
+          ? `${currentValueRef.current} ${transcript}`.trim()
+          : transcript;
+        onChange(nextValue);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, [onChange]);
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       onSubmit(e);
+    }
+  };
+
+  const handleVoiceToggle = () => {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      recognition.start();
+      setIsListening(true);
+    } catch {
+      setIsListening(false);
     }
   };
 
@@ -29,6 +92,14 @@ export default function SearchForm({ value, onChange, onSubmit, onSelectPrompt }
             placeholder="Ask about a scheme or describe what you need…"
             style={{ fontWeight: 400, fontStyle: 'normal', fontSize: '16px' }}
           />
+          <button
+            type="button"
+            onClick={handleVoiceToggle}
+            className={`canva-button flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition ${isListening ? 'border-amber-500 bg-amber-100 text-amber-700' : 'bg-white text-slate-700 hover:bg-slate-50'}`}
+            aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
+          >
+            <Mic className="h-5 w-5" />
+          </button>
           <button
             type="submit"
             className="canva-button flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition hover:brightness-95 active:scale-95"

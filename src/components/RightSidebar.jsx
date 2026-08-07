@@ -1,7 +1,150 @@
-import React from 'react';
-import { CheckCircle, ChevronLeft, ChevronRight, Inbox, Maximize2, Minimize2, Zap, FileText } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircle, ChevronRight, Inbox, Maximize2, Minimize2, Zap, FileText, Volume2 } from 'lucide-react';
 
 export default function RightSidebar({ selectedScheme, width, isExpanded, onToggleExpand }) {
+  const [isReading, setIsReading] = useState(false);
+  const [highlightSection, setHighlightSection] = useState('');
+  const speechIndexRef = useRef(0);
+  const speechQueueRef = useRef([]);
+
+  const supportsSpeech = typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+  const highlightStyle = (key) =>
+    highlightSection === key
+      ? { boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.35)', backgroundColor: 'rgba(219, 234, 254, 0.8)' }
+      : {};
+
+  const readSections = useMemo(() => {
+    if (!selectedScheme) return [];
+
+    const sections = [];
+    if (Array.isArray(selectedScheme.documents) && selectedScheme.documents.length > 0) {
+      sections.push({
+        key: 'documents',
+        title: 'Required documents',
+        text: selectedScheme.documents.join('. ')
+      });
+    }
+
+    if (selectedScheme.benefitsSection || selectedScheme.benefit) {
+      sections.push({
+        key: 'benefits',
+        title: 'Benefits',
+        text: String(selectedScheme.benefitsSection || selectedScheme.benefit || '')
+      });
+    }
+
+    const eligibilityText = Array.isArray(selectedScheme.eligibilityCriteria)
+      ? selectedScheme.eligibilityCriteria.map((item) => `${item.label}: ${item.value}`).join('. ')
+      : selectedScheme.eligibility || '';
+
+    if (eligibilityText) {
+      sections.push({
+        key: 'eligibility',
+        title: 'Eligibility criteria',
+        text: eligibilityText
+      });
+    }
+
+    if (Array.isArray(selectedScheme.importantDates) && selectedScheme.importantDates.length > 0) {
+      sections.push({
+        key: 'importantDates',
+        title: 'Important dates',
+        text: selectedScheme.importantDates.map((item) => `${item.label}: ${item.value}`).join('. ')
+      });
+    }
+
+    if (Array.isArray(selectedScheme.applicationProcess) && selectedScheme.applicationProcess.length > 0) {
+      sections.push({
+        key: 'applicationProcess',
+        title: 'Application process',
+        text: selectedScheme.applicationProcess.map((step, idx) => `Step ${idx + 1}: ${step}`).join('. ')
+      });
+    }
+
+    if (Array.isArray(selectedScheme.rejectionReasons) && selectedScheme.rejectionReasons.length > 0) {
+      sections.push({
+        key: 'rejectionReasons',
+        title: 'Common rejection reasons',
+        text: selectedScheme.rejectionReasons.join('. ')
+      });
+    }
+
+    const personalized = selectedScheme.personalizedEligibility;
+    if (personalized) {
+      sections.push({
+        key: 'personalizedEligibility',
+        title: 'Personalized eligibility',
+        text: `Status: ${personalized.status || 'Unknown'}. Why: ${personalized.why || ''}. Missing: ${personalized.missing || ''}. Next steps: ${personalized.nextSteps || ''}`
+      });
+    }
+
+    return sections;
+  }, [selectedScheme]);
+
+  useEffect(() => {
+    return () => {
+      if (supportsSpeech) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [supportsSpeech]);
+
+  useEffect(() => {
+    if (!selectedScheme) {
+      setIsReading(false);
+      setHighlightSection('');
+      if (supportsSpeech) window.speechSynthesis.cancel();
+    }
+  }, [selectedScheme, supportsSpeech]);
+
+  const stopReading = () => {
+    if (supportsSpeech) {
+      window.speechSynthesis.cancel();
+    }
+    speechQueueRef.current = [];
+    speechIndexRef.current = 0;
+    setIsReading(false);
+    setHighlightSection('');
+  };
+
+  const speakSection = (section) => {
+    if (!supportsSpeech) return;
+    const utterance = new SpeechSynthesisUtterance(`${section.title}. ${section.text}`);
+    utterance.lang = 'en-IN';
+    utterance.rate = 1;
+    utterance.onstart = () => {
+      setHighlightSection(section.key);
+    };
+    utterance.onend = () => {
+      speechIndexRef.current += 1;
+      if (speechIndexRef.current < speechQueueRef.current.length) {
+        speakSection(speechQueueRef.current[speechIndexRef.current]);
+      } else {
+        stopReading();
+      }
+    };
+    utterance.onerror = stopReading;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const startReading = () => {
+    if (!supportsSpeech || readSections.length === 0) return;
+    stopReading();
+    speechQueueRef.current = readSections;
+    speechIndexRef.current = 0;
+    setIsReading(true);
+    speakSection(readSections[0]);
+  };
+
+  const toggleReading = () => {
+    if (isReading) {
+      stopReading();
+      return;
+    }
+    startReading();
+  };
+
   return (
     <aside
       className={`canva-sidebar glass-panel hidden shrink-0 border-y-0 border-r-0 p-6 lg:flex lg:flex-col select-none overflow-y-auto transition-[width] duration-300 ${isExpanded ? 'w-[26rem]' : 'w-80'}`}
@@ -23,15 +166,27 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
           </h2>
         </div>
 
-        <button
-          type="button"
-          onClick={onToggleExpand}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50"
-          aria-label={isExpanded ? 'Collapse right sidebar' : 'Expand right sidebar'}
-          title={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-        >
-          {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleReading}
+            disabled={!supportsSpeech || readSections.length === 0}
+            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition ${isReading ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+            aria-label={isReading ? 'Stop reading details' : 'Read aloud scheme details'}
+          >
+            <Volume2 className="h-4 w-4" />
+            <span>{isReading ? 'Stop' : 'Read'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={onToggleExpand}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50"
+            aria-label={isExpanded ? 'Collapse right sidebar' : 'Expand right sidebar'}
+            title={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+          >
+            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
       {!selectedScheme ? (
@@ -174,14 +329,14 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
           </div>
 
           <div className="mt-6 space-y-4">
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={highlightStyle('benefits')}>
               <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--brand-600)' }}>Benefits</p>
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 {selectedScheme.benefitsSection || selectedScheme.benefit}
               </p>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={highlightStyle('eligibility')}>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Eligibility Criteria</p>
               <div className="mt-3 space-y-3">
                 {(selectedScheme.eligibilityCriteria || []).map((item) => (
@@ -196,7 +351,7 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={highlightStyle('importantDates')}>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Important Dates</p>
               <div className="mt-3 space-y-2">
                 {(selectedScheme.importantDates || []).map((item) => (
@@ -212,7 +367,7 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
             </section>
 
             {selectedScheme.applicationProcess && selectedScheme.applicationProcess.length > 0 && (
-              <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={highlightStyle('applicationProcess')}>
                 <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Application Process</p>
                 <div className="mt-3 space-y-3">
                   {selectedScheme.applicationProcess.map((step, idx) => (
@@ -225,7 +380,7 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
               </section>
             )}
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" style={highlightStyle('rejectionReasons')}>
               <p className="text-xs font-semibold uppercase tracking-wider text-rose-700">Common Reasons for Rejection</p>
               <div className="mt-3 space-y-2">
                 {(selectedScheme.rejectionReasons || []).map((reason) => (
