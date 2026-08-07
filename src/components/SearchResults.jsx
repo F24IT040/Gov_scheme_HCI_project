@@ -6,17 +6,18 @@ export default function SearchResults({
   schemes = [],
   selectedSchemeId,
   onSelectScheme,
-  onViewProcess,
   onClearResults,
   isSingle,
   suggestions = [],
   onSelectSuggestion
 }) {
   const [showAllOptions, setShowAllOptions] = useState(false);
+  const hasSchemes = Array.isArray(schemes) && schemes.length > 0;
+  const hasSuggestions = Array.isArray(suggestions) && suggestions.length > 0;
+
+  if (!hasSchemes && !hasSuggestions && !summary) return null;
 
   const visibleSchemes = showAllOptions || isSingle ? schemes : schemes.slice(0, 4);
-
-  if ((!schemes || schemes.length === 0) && suggestions.length === 0 && !summary) return null;
 
   return (
     <section id="results-panel" className="reveal mb-6" aria-labelledby="results-heading">
@@ -75,52 +76,42 @@ export default function SearchResults({
         </div>
       )}
 
-      {visibleSchemes.length > 0 ? (
-        isSingle ? (
-          <div id="single-result" className="max-w-2xl">
-            <SchemeCard
-              scheme={schemes[0]}
-              isSelected={selectedSchemeId === schemes[0].id}
-              onSelect={onSelectScheme}
-              onViewProcess={onViewProcess}
-              isSingle={true}
-            />
-          </div>
-        ) : (
-          <>
-            <div id="scholarship-results" className="grid gap-4 sm:grid-cols-2">
-              {visibleSchemes.map((scheme) => (
-                <SchemeCard
-                  key={scheme.id}
-                  scheme={scheme}
-                  isSelected={selectedSchemeId === scheme.id}
-                  onSelect={onSelectScheme}
-                  onViewProcess={onViewProcess}
-                  isSingle={false}
-                />
-              ))}
-            </div>
-
-            {schemes.length > 4 && (
-              <div className="mt-4 text-center">
-                <button
-                  type="button"
-                  onClick={() => setShowAllOptions((current) => !current)}
-                  className="canva-button rounded-full border border-slate-200 px-4 py-2 text-sm font-medium transition hover:bg-slate-50 hover:border-slate-300"
-                  style={{ background: 'rgb(255, 255, 255)', color: 'rgb(33, 37, 41)', fontWeight: 600 }}
-                >
-                  {showAllOptions ? 'Show fewer options' : `Show all ${schemes.length} options`}
-                </button>
-              </div>
-            )}
-          </>
-        )
-      ) : (
-        <div className="rounded-2xl bg-slate-50 p-5 text-slate-700">
-          <p className="text-sm leading-6">
-            No direct scheme card is being shown right now. You can still use the suggestions below to continue the conversation.
-          </p>
+      {isSingle && hasSchemes ? (
+        <div id="single-result" className="max-w-2xl">
+          <SchemeCard
+            scheme={schemes[0]}
+            isSelected={selectedSchemeId === schemes[0].id}
+            onSelect={onSelectScheme}
+            isSingle={true}
+          />
         </div>
+      ) : (
+        <>
+          <div id="scholarship-results" className="grid gap-4 sm:grid-cols-2">
+            {visibleSchemes.map((scheme) => (
+              <SchemeCard
+                key={scheme.id}
+                scheme={scheme}
+                isSelected={selectedSchemeId === scheme.id}
+                onSelect={onSelectScheme}
+                isSingle={false}
+              />
+            ))}
+          </div>
+
+          {schemes.length > 4 && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setShowAllOptions((current) => !current)}
+                className="canva-button rounded-full border border-slate-200 px-4 py-2 text-sm font-medium transition hover:bg-slate-50 hover:border-slate-300"
+                style={{ background: 'rgb(255, 255, 255)', color: 'rgb(33, 37, 41)', fontWeight: 600 }}
+              >
+                {showAllOptions ? 'Show fewer options' : `Show all ${schemes.length} options`}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

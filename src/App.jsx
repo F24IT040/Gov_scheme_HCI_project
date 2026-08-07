@@ -7,7 +7,6 @@ import DetailPanel from './components/DetailPanel';
 import EmptyState from './components/EmptyState';
 import SearchForm from './components/SearchForm';
 import RightSidebar from './components/RightSidebar';
-import ProcessPage from './components/ProcessPage';
 
 const RIGHT_SIDEBAR_MIN_WIDTH = 320;
 const RIGHT_SIDEBAR_MAX_WIDTH = 560;
@@ -18,7 +17,6 @@ export default function App() {
   const [queryInput, setQueryInput] = useState('');
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectedScheme, setSelectedScheme] = useState(null);
-  const [viewMode, setViewMode] = useState('results');
   const [rightSidebarWidth, setRightSidebarWidth] = useState(RIGHT_SIDEBAR_MIN_WIDTH);
   const [isResizingRightSidebar, setIsResizingRightSidebar] = useState(false);
   const [chatTurns, setChatTurns] = useState([]);
@@ -28,7 +26,6 @@ export default function App() {
   const turnIdRef = useRef(0);
 
   const resetView = () => {
-    setViewMode('results');
     setQueryInput('');
     setActiveCategory(null);
     setSelectedScheme(null);
@@ -40,7 +37,6 @@ export default function App() {
     const query = rawQuery.trim();
     if (!query) return;
 
-    setViewMode('results');
     setSelectedScheme(null);
     setQueryInput('');
     const turnId = ++turnIdRef.current;
@@ -55,6 +51,7 @@ export default function App() {
         id: turnId,
         query,
         summary: '',
+        answer: '',
         schemes: [],
         suggestions: [],
         isSingle: false,
@@ -96,6 +93,7 @@ export default function App() {
             ? {
                 ...turn,
                 summary: data?.summary || primaryScheme?.summary || '',
+                answer: data?.answer || '',
                 schemes: normalizedSchemes,
                 suggestions: Array.isArray(data?.suggestions) ? data.suggestions : [],
                 isSingle: normalizedSchemes.length <= 1,
@@ -119,6 +117,7 @@ export default function App() {
                 ...turn,
                 loading: false,
                 error: error.message || 'Something went wrong while searching',
+                answer: '',
                 isEmpty: true
               }
             : turn
@@ -137,15 +136,6 @@ export default function App() {
 
   const handleSelectScheme = (scheme) => {
     setSelectedScheme((prev) => (prev?.id === scheme.id ? null : scheme));
-  };
-
-  const handleViewProcess = (scheme) => {
-    setSelectedScheme(scheme);
-    setViewMode('process');
-  };
-
-  const handleBackToResults = () => {
-    setViewMode('results');
   };
 
   const handleFormSubmit = (e) => {
@@ -223,15 +213,10 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex min-w-0 flex-1 flex-col h-full">
-        {viewMode === 'process' ? (
-          <section className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8">
-            <ProcessPage scheme={selectedScheme} onBack={handleBackToResults} />
-          </section>
-        ) : (
-          <section
-            ref={chatContainerRef}
-            className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
-          >
+        <section
+          ref={chatContainerRef}
+          className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
+        >
           <div className="mx-auto w-full max-w-4xl">
             {/* Hero Welcome */}
             <WelcomeHero />
@@ -254,13 +239,18 @@ export default function App() {
                     </div>
                   )}
 
+                  {!turn.loading && !turn.error && turn.answer && (
+                    <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-7 text-slate-700 shadow-sm">
+                      {turn.answer}
+                    </div>
+                  )}
+
                   {!turn.loading && !turn.error && (turn.schemes.length > 0 || (turn.suggestions && turn.suggestions.length > 0) || turn.summary) && (
                     <SearchResults
                       summary={turn.summary}
                       schemes={turn.schemes}
                       selectedSchemeId={selectedScheme?.id}
                       onSelectScheme={handleSelectScheme}
-                      onViewProcess={handleViewProcess}
                       onClearResults={resetView}
                       isSingle={turn.isSingle}
                       suggestions={turn.suggestions}
@@ -268,7 +258,7 @@ export default function App() {
                     />
                   )}
 
-                  {!turn.loading && !turn.error && turn.isEmpty && turn.suggestions.length === 0 && (
+                  {!turn.loading && !turn.error && turn.isEmpty && !turn.answer && (
                     <EmptyState message={turn.summary} />
                   )}
                 </div>

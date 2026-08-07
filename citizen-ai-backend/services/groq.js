@@ -5,6 +5,7 @@ dotenv.config();
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_BASE_URL = process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1';
 const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_CONVERSATION_MODEL = process.env.GROQ_CONVERSATION_MODEL || process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
 if (!GROQ_API_KEY) {
   throw new Error('Missing GROQ_API_KEY in .env. Set GROQ_API_KEY to use the Groq OpenAI-compatible endpoint.');
@@ -53,6 +54,16 @@ function parseGroqResponseBody(body) {
 export async function askGroq(prompt) {
   const requestBody = {
     model: GROQ_MODEL,
+    input: prompt
+  };
+
+  const body = await groqFetch('/responses', requestBody);
+  return parseGroqResponseBody(body);
+}
+
+export async function askGroqConversation(prompt) {
+  const requestBody = {
+    model: GROQ_CONVERSATION_MODEL,
     input: prompt
   };
 

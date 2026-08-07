@@ -9,16 +9,14 @@ const iconMap = {
   Rocket
 };
 
-export default function SchemeCard({ scheme, isSelected, onSelect, onViewProcess, isSingle }) {
+export default function SchemeCard({ scheme, isSelected, onSelect, isSingle }) {
   const IconComponent = iconMap[scheme.icon] || Award;
 
   if (isSingle) {
     return (
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         onClick={() => onSelect(scheme)}
-        onKeyDown={(event) => event.key === 'Enter' && onSelect(scheme)}
         className={`scheme-card single-card w-full rounded-2xl p-5 text-left transition-all ${
           isSelected ? 'selected' : ''
         }`}
@@ -56,24 +54,13 @@ export default function SchemeCard({ scheme, isSelected, onSelect, onViewProcess
           <ArrowUpRight className="mt-1 h-5 w-5 shrink-0" style={{ color: 'var(--brand-600)' }} />
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-4 flex flex-wrap gap-2 items-center">
           <span
             className="canva-tag rounded-full px-3 py-1 text-xs font-semibold"
             style={{ background: scheme.tagBg, color: scheme.tagColor, fontWeight: 600, fontStyle: 'normal', fontSize: '12px' }}
           >
             {scheme.tag}
           </span>
-          <button
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              onViewProcess?.(scheme);
-            }}
-            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-            style={{ color: 'var(--brand-600)' }}
-          >
-            Process
-          </button>
           <span
             className="canva-text py-1 text-sm font-semibold ml-auto"
             style={{ color: 'var(--brand-600)', fontWeight: 600, fontStyle: 'normal', fontSize: '14px' }}
@@ -81,16 +68,14 @@ export default function SchemeCard({ scheme, isSelected, onSelect, onViewProcess
             View eligibility summary →
           </span>
         </div>
-      </div>
+      </button>
     );
   }
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={() => onSelect(scheme)}
-      onKeyDown={(event) => event.key === 'Enter' && onSelect(scheme)}
       className={`scheme-card scholarship-card rounded-2xl p-5 text-left transition-all ${
         isSelected ? 'selected' : ''
       }`}
@@ -127,25 +112,12 @@ export default function SchemeCard({ scheme, isSelected, onSelect, onViewProcess
         {scheme.copy}
       </p>
 
-      <div className="mt-4 flex items-center gap-2">
-        <span
-          className="canva-tag inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
-          style={{ background: scheme.tagBg, color: scheme.tagColor, fontWeight: 600, fontStyle: 'normal', fontSize: '12px' }}
-        >
-          {scheme.tag}
-        </span>
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            onViewProcess?.(scheme);
-          }}
-          className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-          style={{ color: 'var(--brand-600)' }}
-        >
-          Process
-        </button>
-      </div>
-    </div>
+      <span
+        className="canva-tag mt-4 inline-block rounded-full px-3 py-1 text-xs font-semibold"
+        style={{ background: scheme.tagBg, color: scheme.tagColor, fontWeight: 600, fontStyle: 'normal', fontSize: '12px' }}
+      >
+        {scheme.tag}
+      </span>
+    </button>
   );
 }
