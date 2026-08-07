@@ -320,6 +320,14 @@ export default function App() {
 
   return (
     <div className="app-shell flex w-full">
+
+      {/* Full-page Process Simulator — renders over everything */}
+      {viewMode === 'process' && (
+        <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: '#F9F4EA' }}>
+          <ProcessPage scheme={selectedScheme} onBack={handleBackToResults} />
+        </div>
+      )}
+
       {/* Left Sidebar */}
       <Sidebar
         onNewSearch={resetView}
@@ -330,15 +338,10 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex min-w-0 flex-1 flex-col h-full">
-        {viewMode === 'process' ? (
-          <section className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8">
-            <ProcessPage scheme={selectedScheme} onBack={handleBackToResults} />
-          </section>
-        ) : (
-          <section
-            ref={chatContainerRef}
-            className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
-          >
+        <section
+          ref={chatContainerRef}
+          className="chat-scroll flex-1 overflow-y-auto px-4 py-6 md:px-9 md:py-8"
+        >
           <div className="mx-auto w-full max-w-4xl">
             {/* Hero Welcome — only show when no turns yet */}
             {chatTurns.length === 0 && <WelcomeHero onSelectPrompt={handleSearch} />}
@@ -387,7 +390,6 @@ export default function App() {
             </div>
           </div>
         </section>
-        )}
 
         {/* Footer Prompt & Input Form */}
         <SearchForm

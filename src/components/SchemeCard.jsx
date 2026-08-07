@@ -9,7 +9,7 @@ const iconMap = {
   Rocket
 };
 
-export default function SchemeCard({ scheme, isSelected, onSelect, isSingle }) {
+export default function SchemeCard({ scheme, isSelected, onSelect, onViewProcess, isSingle }) {
   const IconComponent = iconMap[scheme.icon] || Award;
 
   if (isSingle) {
@@ -61,6 +61,14 @@ export default function SchemeCard({ scheme, isSelected, onSelect, isSingle }) {
           >
             {scheme.tag}
           </span>
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onViewProcess?.(scheme); }}
+            className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold transition hover:border-slate-300 hover:bg-slate-50"
+            style={{ color: 'var(--brand-600)' }}
+          >
+            View Process →
+          </button>
           <span
             className="canva-text py-1 text-sm font-semibold ml-auto"
             style={{ color: 'var(--brand-600)', fontWeight: 600, fontStyle: 'normal', fontSize: '14px' }}
@@ -118,6 +126,19 @@ export default function SchemeCard({ scheme, isSelected, onSelect, isSingle }) {
       >
         {scheme.tag}
       </span>
+      <div className="mt-3">
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onViewProcess?.(scheme); }}
+          className="w-full rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs font-semibold transition hover:border-slate-300 hover:bg-slate-50 flex items-center justify-center gap-1.5"
+          style={{ color: 'var(--brand-600)' }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          View Process Simulator
+        </button>
+      </div>
     </button>
   );
 }

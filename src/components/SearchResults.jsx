@@ -6,6 +6,7 @@ export default function SearchResults({
   schemes = [],
   selectedSchemeId,
   onSelectScheme,
+  onViewProcess,
   onClearResults,
   isSingle,
   suggestions = [],
@@ -82,6 +83,7 @@ export default function SearchResults({
             scheme={schemes[0]}
             isSelected={selectedSchemeId === schemes[0].id}
             onSelect={onSelectScheme}
+            onViewProcess={onViewProcess}
             isSingle={true}
           />
         </div>
@@ -94,6 +96,7 @@ export default function SearchResults({
                 scheme={scheme}
                 isSelected={selectedSchemeId === scheme.id}
                 onSelect={onSelectScheme}
+                onViewProcess={onViewProcess}
                 isSingle={false}
               />
             ))}

@@ -171,7 +171,7 @@ export default function RightSidebar({ selectedScheme, width, isExpanded, onTogg
             type="button"
             onClick={toggleReading}
             disabled={!supportsSpeech || readSections.length === 0}
-            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition ${isReading ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}
+            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-semibold transition ${isReading ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-[#c68d8d] bg-[#fdf8f8] text-[#b87777] hover:bg-[#faefef] shadow-sm'}`}
             aria-label={isReading ? 'Stop reading details' : 'Read aloud scheme details'}
           >
             <Volume2 className="h-4 w-4" />
