@@ -69,7 +69,7 @@ export default function RegisterPage({ onBack, onSubmit, onLogin }) {
     }
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/auth/register`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://govschemehciproject-production.up.railway.app'}/auth/register`, {
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, interests: selected }),
       });

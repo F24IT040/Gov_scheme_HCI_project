@@ -18,7 +18,7 @@ import UserProfile from './components/UserProfile';
 const RIGHT_SIDEBAR_MIN_WIDTH = 320;
 const RIGHT_SIDEBAR_MAX_WIDTH = 560;
 const RIGHT_SIDEBAR_EXPANDED_WIDTH = 448;
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://govschemehciproject-production.up.railway.app';
 
 // Page order for back-navigation
 const PAGE_STACK = ['landing', 'login', 'register', 'app'];

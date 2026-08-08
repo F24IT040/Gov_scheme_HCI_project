@@ -83,7 +83,7 @@ export default function LoginPage({ onBack, onLogin, onRegister }) {
     }
     setBusy(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://govschemehciproject-production.up.railway.app'}/auth/login`, {
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile }),
       });
