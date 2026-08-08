@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+/citizen-ai-backend/node_modules/
+
+# Production build files
+dist/
+
+# Environment files
+.env
+citizen-ai-backend/.env
+citizen-ai-backend/data/*.sqlite
+citizen-ai-backend/data/*.sqlite-*
+
+# Editor directories and files
+.vscode/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

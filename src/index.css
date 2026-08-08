@@ -1,0 +1,334 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens ─────────────────────────────────────────────────── */
+:root {
+  --ink:          #0f172a;
+  --muted:        #64748b;
+  --brand-50:     #fcf6f6;
+  --brand-100:    #faefef;
+  --brand-200:    #f5dede;
+  --brand-400:    #e5b8b8;
+  --brand-500:    #dca1a1;
+  --brand-600:    #c68d8d;
+  --brand-700:    #a87070;
+  --brand-900:    #633d3d;
+  --brand-accent: #b87777;
+  --line:         #e8d8d8;
+  --paper:        #ffffff;
+  --canvas:       #F9F4EA;
+
+  /* Consistent radius scale */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 24px;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+  /* Smooth font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  color: var(--ink);
+  background-color: var(--canvas);
+  overflow-x: hidden;
+}
+
+/* ─── App shell ─────────────────────────────────────────────────────── */
+.app-shell {
+  width: 100%;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 82%  8%, rgba(220,161,161,.18), transparent 24rem),
+    radial-gradient(circle at 34% 100%, rgba(184,119,119,.08), transparent 28rem),
+    var(--canvas);
+}
+
+/* ─── Glass panel ───────────────────────────────────────────────────── */
+.glass-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.82));
+  border: 1px solid rgba(198,141,141,.22);
+  box-shadow:
+    0 20px 44px rgba(15,23,42,.05),
+    inset 0 1px 0 rgba(255,255,255,.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ─── Gradients / text effects ──────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, #D86D00 0%, #F58B14 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Shadow utilities ──────────────────────────────────────────────── */
+.shadow-glass {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 8px 30px rgba(0,0,0,0.04);
+}
+
+.shadow-input {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02), inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.shadow-input-focus {
+  box-shadow: 0 4px 12px rgba(198,141,141,0.18), inset 0 0 0 1.5px rgba(198,141,141,0.55);
+}
+
+.shadow-float-hover:hover {
+  box-shadow: 0 28px 48px -14px rgba(0,0,0,0.08);
+}
+
+/* ─── Animations ────────────────────────────────────────────────────── */
+.animate-fade-in-up {
+  animation: fadeInUp 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+.reveal {
+  animation: lift 0.32s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes lift {
+  from { opacity: 0; transform: translateY(8px);  }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes blob {
+  0%   { transform: translate(0px,  0px)  scale(1);    }
+  100% { transform: translate(30px,-40px) scale(1.08); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(-50%,-50%) translateY(0);    }
+  50%       { transform: translate(-50%,-50%) translateY(-16px); }
+}
+
+/* ─── Background decoration layers ─────────────────────────────────── */
+.bg-grain,
+.bg-orbs,
+.bg-grid,
+.bg-lines,
+#cursor-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -10;
+}
+
+.bg-grain {
+  opacity: 0.28;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.bg-orbs {
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  animation: blob 15s infinite alternate ease-in-out;
+}
+
+.orb-1 {
+  top: -12%; left: -10%;
+  width: 52vw; height: 52vw;
+  background: rgba(220,161,161,0.12);
+}
+
+.orb-2 {
+  bottom: -10%; right: -10%;
+  width: 62vw; height: 62vw;
+  background: rgba(184,119,119,0.10);
+  animation-delay: -5s;
+}
+
+.orb-3 {
+  top: 18%; right: 12%;
+  width: 44vw; height: 44vw;
+  background: rgba(245,158,11,0.04);
+  animation-delay: -9s;
+}
+
+.bg-grid {
+  opacity: 0.5;
+  background-image:
+    linear-gradient(to right,  rgba(15,23,42,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15,23,42,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 35%, black 16%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, black 16%, transparent 78%);
+}
+
+.bg-lines {
+  inset: -5%;
+  width: 110%; height: 110%;
+  opacity: 0.7;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-100,300 C200,150 400,650 1200,200' fill='none' stroke='%23dca1a1' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Cpath d='M-100,320 C220,170 420,670 1220,220' fill='none' stroke='%23b87777' stroke-width='1' stroke-opacity='0.2'/%3E%3Cpath d='M-100,340 C240,190 440,690 1240,240' fill='none' stroke='%238b5cf6' stroke-width='0.5' stroke-opacity='0.08'/%3E%3Cpath d='M-100,360 C260,210 460,710 1260,260' fill='none' stroke='%23dca1a1' stroke-width='0.5' stroke-opacity='0.1'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 50%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 50%, transparent 90%);
+}
+
+#cursor-glow {
+  top: 10%; left: 40%;
+  width: 600px; height: 600px;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(circle, rgba(198,141,141,0.15) 0%, rgba(198,141,141,0) 60%);
+  opacity: 1;
+  animation: float 12s ease-in-out infinite;
+}
+
+/* ─── Brand helpers ─────────────────────────────────────────────────── */
+.brand-mark {
+  background: linear-gradient(135deg, var(--brand-600), var(--brand-500), var(--brand-accent));
+  box-shadow: 0 8px 18px rgba(198,141,141,.22);
+}
+
+/* ─── Scheme cards ──────────────────────────────────────────────────── */
+.scheme-card {
+  border: 2px solid transparent;
+  border-radius: var(--radius-2xl);
+  background: rgba(255,255,255,.96);
+  box-shadow:
+    0 4px 14px rgba(15,23,42,.05),
+    0 1px 3px  rgba(15,23,42,.04);
+  transition:
+    transform     0.2s cubic-bezier(0.4,0,0.2,1),
+    box-shadow    0.2s cubic-bezier(0.4,0,0.2,1),
+    border-color  0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Equal height inside the results grid */
+#scholarship-results > div {
+  display: flex;
+}
+
+#scholarship-results .scheme-card {
+  width: 100%;
+}
+
+.scheme-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 28px rgba(198,141,141,.16),
+    0 2px  8px  rgba(15,23,42,.05);
+  border-color: rgba(198,141,141,.28);
+}
+
+.scheme-card:focus-visible {
+  outline: none;
+  border-color: rgba(198,141,141,.55);
+  box-shadow: 0 0 0 3px rgba(198,141,141,.25);
+}
+
+.scheme-card.selected {
+  border-color: rgba(198,141,141,.60);
+  box-shadow:
+    0 10px 24px rgba(198,141,141,.18),
+    0 0   0 3px rgba(198,141,141,.15);
+  background: #ffffff;
+}
+
+/* ─── Scrollbars ────────────────────────────────────────────────────── */
+/* Chat area — thin brand-tinted thumb */
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(198,141,141,.25) transparent;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(198,141,141,.28);
+  border-radius: 99px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(198,141,141,.46);
+}
+
+/* Sidebar — match chat-scroll style */
+aside::-webkit-scrollbar {
+  width: 4px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: rgba(198,141,141,.22);
+  border-radius: 99px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: rgba(198,141,141,.4);
+}
+
+/* Hide scrollbar for QuickPrompts overflow rows (JS adds fade instead) */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Focus rings — consistent brand rose across all interactive elements */
+:focus-visible {
+  outline: 2px solid rgba(198,141,141,.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Buttons and inputs get a tighter ring */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(198,141,141,.60);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Suppress the focus ring when using a pointing device */
+:focus:not(:focus-visible) {
+  outline: none;
+}
