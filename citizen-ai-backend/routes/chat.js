@@ -1,358 +1,170 @@
-import express from 'express';
-
-import { appendSchemeToCache, buildSchemeResponse } from '../services/schemeCache.js';
+import { appendSchemeToCache, buildSchemeResponse, findCachedMatches } from '../services/schemeCache.js';
 import { fetchLiveSchemeData } from '../services/liveSchemeSearch.js';
 import { isConversationalEligibilityQuestion } from '../services/conversationClassifier.js';
 import { askGroqConversation } from '../services/groq.js';
 
-const router = express.Router();
+/* ── helpers ─────────────────────────────────────────────────────── */
+function lo(v) { return String(v || '').toLowerCase(); }
+function isHindi(t) { return /[\u0900-\u097F]/.test(t); }
 
-function normalize(value) {
-  return String(value || '').toLowerCase();
+function parseProfile(history, message, language = 'en') {
+  const combined = [...(history || []).map(t => lo(t?.content)), lo(message)].join(' ');
+  const hindi = language === 'hi' || isHindi(message);
+  let intent = null;
+
+  if (/student|scholar|school|college|padhna|vidyarthi|chhatra/.test(combined)) intent = 'student';
+  else if (/farmer|kisan|farm|agriculture|krishi|kheti/.test(combined)) intent = 'farming';
+  else if (/\b(women|woman|mahila|nari)\b/.test(combined)) intent = 'women';
+  else if (/\b(housing|home|awas|ghar|makaan)\b/.test(combined)) intent = 'housing';
+
+  const state = ['maharashtra','bihar','uttar pradesh','rajasthan','gujarat','karnataka',
+    'tamil nadu','kerala','andhra pradesh','telangana','madhya pradesh','west bengal',
+    'delhi','punjab','haryana','jharkhand','odisha'].find(s => combined.includes(s)) || null;
+
+  return { intent, state, hindi };
 }
 
-function isBroadUserRequest(message = '') {
-  const normalized = normalize(message);
-  const broadTriggers = [
-    'student', 'farmer', 'housewife', 'self employed', 'unemployed',
-    'looking for schemes', 'need schemes', 'help me', 'show me', 'give me',
-    'finding schemes', 'i want more', 'related schemes', 'support', 'loan',
-    'scholarship', 'accommodation', 'housing', 'travel',
-    'women', 'woman', 'empower', 'empowerment', 'mahila', 'nari', 'self help group', 'shg'
-  ];
-  const specificTriggers = [
-    'pm-kisan', 'pmkisan', 'pmmy', 'pm-egp', 'pm svanidhi', 'stand-up india',
-    'scheme name', 'official portal', 'how to apply', 'eligibility', 'documents',
-    'state', 'category', 'email', 'phone', 'bank', 'account'
-  ];
-
-  const hasBroad = broadTriggers.some((term) => normalized.includes(term));
-  const hasSpecific = specificTriggers.some((term) => normalized.includes(term));
-
-  return hasBroad && !hasSpecific;
-}
-
-function shouldUseLiveSupplement(message, cacheMatches) {
-  if (!cacheMatches || cacheMatches.length === 0) return true;
-  if (isBroadUserRequest(message) && cacheMatches.length < 8) return true;
-
-  return false;
-}
-
-function mergeSchemeResponses(primary = [], secondary = []) {
-  const normalizedKey = (item) => normalize(item.official_url || item.title || item.scheme_name || '');
-  const seen = new Set(primary.map(normalizedKey));
-  const merged = [...primary];
-
-  for (const scheme of secondary) {
-    const key = normalizedKey(scheme);
-    if (key && !seen.has(key)) {
-      seen.add(key);
-      merged.push(scheme);
-    }
-  }
-
-  return merged;
-}
-
-function buildFollowUpSuggestions(message) {
-  const normalized = normalize(message);
-  const studentKeywords = ['student', 'scholarship', 'education', 'college', 'school', 'tution', 'degree'];
-  const farmerKeywords = ['farmer', 'kisan', 'agriculture', 'farm', 'cultivator', 'rural'];
-  const housingKeywords = ['housing', 'home', 'accommodation', 'stay', 'rent'];
-
-  if (studentKeywords.some((term) => normalized.includes(term))) {
-    return ['Scholarship schemes', 'Student loan schemes', 'Student housing support', 'Skill training for students'];
-  }
-
-  if (farmerKeywords.some((term) => normalized.includes(term))) {
-    return ['Crop loan schemes', 'Farm equipment subsidies', 'Irrigation support schemes', 'Farmer welfare pensions'];
-  }
-
-  if (housingKeywords.some((term) => normalized.includes(term))) {
-    return ['Affordable housing schemes', 'Rental support schemes', 'Home renovation subsidies', 'Housing loan schemes'];
-  }
-
-  return ['Scholarship schemes', 'Loan schemes', 'Housing support', 'Skill training schemes'];
-}
-
-function parseConversationProfile(history, message) {
-  const combined = [
-    ...(Array.isArray(history) ? history : []).map((turn) => normalize(turn?.content)),
-    normalize(message)
-  ].join(' ');
-
-  const profile = {
-    intent: null,
-    state: null,
-    caste: null,
-    income: null,
-    education: null,
-    occupation: null,
-    needsScholarship: false,
-    needsFarmerSupport: false
+function fallbackSuggestions(profile) {
+  const h = profile.hindi;
+  const map = {
+    student:  h ? ['छात्रवृत्ति योजनाएँ','छात्र ऋण','कौशल प्रशिक्षण'] : ['Scholarship schemes','Student loans','Skill training'],
+    farming:  h ? ['फसल बीमा','कृषि सब्सिडी','किसान पेंशन']          : ['Crop insurance','Farm subsidies','Farmer pension'],
+    women:    h ? ['महिला सशक्तिकरण','महिला ऋण']                      : ['Women empowerment','Women self-employment'],
+    housing:  h ? ['पीएम आवास योजना','किफायती आवास']                   : ['PM Awas Yojana','Affordable housing'],
   };
-
-  if (combined.includes('student') || combined.includes('scholar') || combined.includes('school') || combined.includes('college')) {
-    profile.intent = 'student';
-    profile.needsScholarship = true;
-  }
-
-  if (combined.includes('farmer') || combined.includes('kisan') || combined.includes('farm') || combined.includes('agriculture')) {
-    profile.intent = 'farming';
-    profile.needsFarmerSupport = true;
-  }
-
-  const stateMatches = [
-    'maharashtra', 'bihar', 'uttar pradesh', 'rajasthan', 'gujarat', 'karnataka',
-    'tamil nadu', 'kerala', 'andhra pradesh', 'telangana', 'madhya pradesh', 'west bengal'
-  ];
-  profile.state = stateMatches.find((state) => combined.includes(state)) || null;
-
-  const casteMatches = ['obc', 'sc', 'st', 'general', 'ews'];
-  profile.caste = casteMatches.find((caste) => combined.includes(caste)) || null;
-
-  const incomeMatch = combined.match(/(?:income|family income|annual income)\s*(?:is|=|:)?\s*(?:around|about|approx(?:\.)?)?\s*(\d{4,9})/);
-  profile.income = incomeMatch ? Number(incomeMatch[1]) : null;
-
-  const educationMatches = ['school', 'class 8', 'class 10', 'class 12', 'college', 'diploma', 'degree', 'post-matric'];
-  profile.education = educationMatches.find((item) => combined.includes(item)) || null;
-
-  const occupationMatches = ['farmer', 'cultivator', 'student', 'self employed', 'unemployed'];
-  profile.occupation = occupationMatches.find((item) => combined.includes(item)) || null;
-
-  return profile;
-}
-function buildConversationalAnswer(message, profile) {
-  const normalized = normalize(message);
-  const categoryHint = profile.caste || profile.intent || 'your background';
-
-  if (profile.intent === 'farming') {
-    return `Based on your message, you may be looking for farming-related support. Eligibility usually depends on your landholding status, state rules, and the latest scheme conditions. Share your state and land details if you want a more precise answer.`;
-  }
-
-  if (profile.intent === 'student' || normalized.includes('student') || normalized.includes('scholarship')) {
-    return `Based on your message, you may be asking about student or scholarship eligibility. Many schemes depend on your category, income, course, and state. Share your state, course level, and family income for a more precise answer.`;
-  }
-
-  if (profile.caste) {
-    return `Your ${profile.caste.toUpperCase()} category may be relevant for many government schemes, but eligibility still depends on your state, income, and the specific scheme rules. Share a bit more context so I can guide you better.`;
-  }
-
-  return `You may be asking about eligibility rather than a specific scheme list. I can help explain whether a scheme is likely relevant, but I need a little more detail like your state, category, income, and purpose to give a precise answer.`;
+  return map[profile.intent] || (h
+    ? ['छात्रवृत्ति','किसान योजना','आवास योजना','स्वास्थ्य']
+    : ['Scholarship','Farmer schemes','Housing','Health schemes']);
 }
 
-function buildNoMatchResponse(profile, query) {
-  const intentText = profile.intent === 'farming' ? 'farming' : profile.intent === 'student' ? 'student' : 'scheme';
-
+function noMatchCard(profile, query) {
+  const h = profile.hindi;
   return {
-    id: '',
-    kicker: 'No exact match',
-    title: 'No exact match found',
-    fullTitle: 'No exact match found',
-    copy: '',
-    summary: `No exact ${intentText} scheme was found in the current dataset for: ${query}`,
-    benefit: '',
-    eligibilityText: 'No exact match is available in the dataset, so I cannot confirm a specific scheme.',
-    eligibility: [],
-    documents: [],
-    steps: ['Check the official portal', 'Share more details like state, category, or income', 'Try a broader query if needed'],
-    website: '',
-    confidence: 'Low',
-    icon: 'Award',
-    iconBg: 'rgb(250, 250, 250)',
-    iconColor: 'rgb(92, 99, 112)',
-    tag: 'No exact match',
-    tagBg: 'rgb(250, 250, 250)',
-    tagColor: 'rgb(92, 99, 112)',
-    category: '',
-    isSingleResult: true,
-    benefitsSection: 'No exact dataset match available.',
-    eligibilityCriteria: [],
-    importantDates: [],
-    rejectionReasons: [],
-    personalizedEligibility: {
-      status: 'Unknown',
-      why: 'The current dataset does not contain a strict match for your query.',
-      missing: 'Share your state, category, income, and purpose so I can narrow it down.',
-      nextSteps: 'Provide more context or check the official portal for the latest scheme list.'
-    }
+    id: '__no_match__',
+    isNoMatch: true,
+    kicker:    h ? 'कोई मिलान नहीं' : 'No match',
+    title:     h ? 'कोई सटीक मिलान नहीं' : 'No exact match found',
+    fullTitle: h ? 'कोई सटीक मिलान नहीं' : 'No exact match found',
+    copy:      h ? 'योजना का नाम या अपनी श्रेणी बताएँ।' : 'Try a scheme name or describe your need.',
+    summary:   h ? `"${query}" के लिए कोई योजना नहीं मिली।` : `No scheme found for: "${query}"`,
+    benefit: '', eligibility: [], documents: [], process_steps: [], application_process: [],
+    website: '', official_url: '', confidence: 'Low', confidence_score: 0,
+    icon: 'Award', iconBg: 'rgb(245,245,245)', iconColor: 'rgb(160,160,160)',
+    tag: h ? 'कोई मिलान नहीं' : 'No match',
+    tagBg: 'rgb(245,245,245)', tagColor: 'rgb(160,160,160)',
+    category: '', isSingleResult: true, benefitsSection: '',
+    eligibilityCriteria: [], importantDates: [], rejectionReasons: [],
+    personalizedEligibility: null,
   };
 }
 
-function extractJsonArray(text) {
-  const cleaned = String(text || '')
-    .replace(/```(?:json)?/gi, '')
-    .replace(/```/g, '')
-    .trim();
+async function getSuggestions(message, history, profile, schemeNames) {
+  const h = profile.hindi;
+  const hist = (history || []).slice(-4).map(t => `${t?.role}: ${t?.content}`).join('\n') || 'none';
+  const hint = schemeNames.length ? `Found: ${schemeNames.join(', ')}.` : '';
+  const prompt = `Government scheme assistant for Indian citizens.
+User: ${message}
+History: ${hist}
+${hint}
+Return ONLY a JSON array of 3-5 short follow-up suggestions.
+${h ? 'Write in Hindi.' : 'Write in English.'}
+Example: ["What documents needed?","How to apply?"]`;
 
+  const text = await askGroqConversation(prompt);
+  const cleaned = text.replace(/```[a-z]*/gi,'').replace(/```/g,'').trim();
   const match = cleaned.match(/\[[\s\S]*\]/);
-  if (!match) {
-    throw new Error('No JSON array found in Groq response');
-  }
-
-  return JSON.parse(match[0]);
+  if (!match) return [];
+  const arr = JSON.parse(match[0]);
+  return Array.isArray(arr) ? arr.filter(s => typeof s === 'string').slice(0,5) : [];
 }
 
-async function generateContextualSuggestions(message, history = [], profile = {}, schemeNames = []) {
-  const conversationHistory = Array.isArray(history)
-    ? history.map((turn) => `${turn?.role || 'user'}: ${turn?.content || ''}`).filter(Boolean).join('\n')
-    : '';
+/* ── main handler — exported as plain async function ─────────────── */
+export default async function chatHandler(req, res) {
+  const message = String(req.body?.message || '').trim();
+  const history = Array.isArray(req.body?.history) ? req.body.history : [];
+  const language = req.body?.language === 'hi' ? 'hi' : 'en';
+  const profile = parseProfile(history, message, language);
 
-  const schemeHint = Array.isArray(schemeNames) && schemeNames.length > 0
-    ? `Relevant schemes found: ${schemeNames.join(', ')}.`
-    : '';
+  console.log(`\n[chat] "${message}" | hindi:${profile.hindi} | intent:${profile.intent}`);
 
-  const prompt = `You are a contextual government-scheme assistant.
-
-The user query is: ${message}
-
-Conversation history:
-${conversationHistory || 'none'}
-
-${schemeHint}
-
-Based on the current context, return a JSON array of 3 to 5 short follow-up suggestions the user can click or ask next. Use phrases that are relevant to the query and the evolving conversation. Do not include markdown, explanation, or any extra text.
-
-Example output:
-["Share my category details", "Show schemes for students", "Explain eligibility for OBC"]`;
-
-  const responseText = await askGroqConversation(prompt);
-  const suggestions = extractJsonArray(responseText);
-
-  if (!Array.isArray(suggestions)) {
-    return [];
-  }
-
-  return suggestions
-    .filter((item) => typeof item === 'string' && item.trim())
-    .slice(0, 5)
-    .map((item) => item.trim());
-}
-
-router.post('/', async (req, res) => {
-  const message = String(req.body.message || '');
-  const history = Array.isArray(req.body.history) ? req.body.history : [];
-  const profile = parseConversationProfile(history, message);
+  if (!message) return res.status(400).json({ error: 'Message required' });
 
   try {
-    const isConversational = isConversationalEligibilityQuestion(message);
-
-    if (isConversational) {
-      const profileAnswer = buildConversationalAnswer(message, profile);
-      let aiAnswer = profileAnswer;
-      let suggestions = [];
-
-      try {
-        const conversationHistory = Array.isArray(history) ? history.map((turn) => turn?.content || '').filter(Boolean) : [];
-        const prompt = `You are a contextual government-scheme assistant for conversational support.
-Your job is to answer eligibility or general questions like a normal chatbot.
-Use the conversation history and current message to stay consistent.
-Do not list schemes unless the user explicitly asks for them.
-
-Conversation history:
-${conversationHistory.slice(-6).join('\n')}
-
-Current user message: ${message}
-
-User profile context: ${JSON.stringify(profile)}
-
-Answer briefly, clearly, and helpfully in plain conversational language.`;
-        aiAnswer = await askGroqConversation(prompt);
-      } catch (aiError) {
-        console.warn('Conversational Groq answer generation failed, using fallback conversational response:', aiError?.message || aiError);
-      }
+    /* ── Conversational branch ── */
+    if (isConversationalEligibilityQuestion(message)) {
+      console.log('[chat] → conversational branch');
+      let answer = profile.hindi
+        ? 'अपनी राज्य, श्रेणी और आय बताएँ ताकि मैं बेहतर मार्गदर्शन कर सकूँ।'
+        : 'Please share your state, category, and income for a precise answer.';
 
       try {
-        suggestions = await generateContextualSuggestions(message, history, profile, []);
-      } catch (suggestionError) {
-        console.warn('Suggestion generation failed, using static fallback:', suggestionError?.message || suggestionError);
-        suggestions = buildFollowUpSuggestions(message);
-      }
+        const hist = history.slice(-6).map(t => t?.content || '').filter(Boolean).join('\n');
+        answer = await askGroqConversation(
+          `Government scheme assistant. ${profile.hindi ? 'Reply in Hindi.' : 'Reply in English.'}
+History:\n${hist || 'none'}
+Message: ${message}
+Profile: ${JSON.stringify(profile)}
+Answer the user's question directly and clearly. Do not list or recommend schemes unless the user explicitly asks for schemes.`
+        );
+      } catch (e) { console.warn('[chat] conversational Groq failed:', e.message); }
 
-      res.json({
-        summary: aiAnswer,
-        answer: aiAnswer,
-        schemes: [],
-        suggestions,
-        isSingle: false,
-        isEmpty: true,
-        source: 'conversation'
-      });
-      return;
+      let suggestions = fallbackSuggestions(profile);
+      try { suggestions = await getSuggestions(message, history, profile, []); } catch {}
+
+      return res.json({ summary: answer, answer, schemes: [], suggestions, isSingle: false, isEmpty: true, source: 'conversation' });
     }
 
-    console.log('Triggering GROQ Live Retrieval only');
+    /* ── Live retrieval branch ── */
+    console.log('[chat] → live retrieval branch');
     let liveSchemes = [];
     try {
-      liveSchemes = await fetchLiveSchemeData(message, history);
-      await Promise.all(liveSchemes.map((scheme) => appendSchemeToCache(scheme, message)));
-    } catch (liveError) {
-      console.error('Live retrieval failed:', liveError?.message || liveError);
-      res.json({
-        summary: 'No exact match was found in the current dataset.',
-        schemes: [buildNoMatchResponse(profile, message)],
-        isSingle: true,
-        isEmpty: false,
-        source: 'live_failed',
-        error: 'Unable to retrieve live scheme data at this time.'
+      liveSchemes = await fetchLiveSchemeData(message, history, language);
+      Promise.all(liveSchemes.map(s => appendSchemeToCache(s, message))).catch(() => {});
+    } catch (e) {
+      console.error('[chat] fetchLiveSchemeData error:', e.message);
+      // Cached results remain useful if the AI provider is unavailable.
+      try {
+        const cachedSchemes = await findCachedMatches(message, history);
+        if (cachedSchemes.length > 0) {
+          return res.json({
+            summary: 'Live AI search is unavailable. Showing matching saved results.',
+            schemes: cachedSchemes,
+            suggestions: fallbackSuggestions(profile),
+            isSingle: cachedSchemes.length === 1,
+            isEmpty: false,
+            source: 'cache_fallback'
+          });
+        }
+      } catch (cacheError) {
+        console.error('[chat] cache fallback error:', cacheError.message);
+      }
+
+      return res.status(503).json({
+        error: 'The AI service cannot be reached. Please check your internet connection, proxy, or firewall and try again.',
+        source: 'live_unreachable'
       });
-      return;
     }
 
-    const responseSchemes = liveSchemes.map((scheme) =>
-      buildSchemeResponse(scheme, {
-        query: message,
-        source: 'groq_live',
-        isSingleResult: false
-      })
-    );
+    const schemes = liveSchemes.map(s => buildSchemeResponse(s, { query: message, source: s.source, isSingleResult: false }));
+    console.log(`[chat] built ${schemes.length} scheme(s)`);
 
-    let suggestions = [];
-    try {
-      suggestions = await generateContextualSuggestions(
-        message,
-        history,
-        profile,
-        responseSchemes.map((scheme) => scheme.scheme_name).filter(Boolean)
-      );
-    } catch (suggestionError) {
-      console.warn('Suggestion generation failed, using static fallback:', suggestionError?.message || suggestionError);
-      suggestions = buildFollowUpSuggestions(message);
+    if (schemes.length === 0) {
+      const nm = noMatchCard(profile, message);
+      return res.json({ summary: nm.summary, schemes: [nm], suggestions: fallbackSuggestions(profile), isSingle: true, isEmpty: true, source: 'live_empty' });
     }
 
-    if (responseSchemes.length > 0) {
-      res.json({
-        summary: `Found ${responseSchemes.length} matching scheme${responseSchemes.length === 1 ? '' : 's'} from live retrieval.`,
-        schemes: responseSchemes,
-        suggestions,
-        isSingle: responseSchemes.length === 1,
-        isEmpty: false,
-        source: 'live_only'
-      });
-      return;
-    }
+    let suggestions = fallbackSuggestions(profile);
+    try { suggestions = await getSuggestions(message, history, profile, schemes.map(s => s.title).filter(Boolean)); } catch {}
 
-    res.json({
-      summary: 'No exact match was found in the current dataset.',
-      schemes: [buildNoMatchResponse(profile, message)],
-      suggestions: suggestions.length > 0 ? suggestions : buildFollowUpSuggestions(message),
-      isSingle: true,
-      isEmpty: false,
-      source: 'live_failed'
-    });
-  } catch (error) {
-    console.error('Chat request failed:', error?.message || error);
+    const summary = profile.hindi
+      ? `${schemes.length} योजना${schemes.length === 1 ? '' : 'एँ'} मिलीं।`
+      : `Found ${schemes.length} scheme${schemes.length === 1 ? '' : 's'}.`;
 
-    res.json({
-      summary: 'No exact match was found in the current dataset.',
-      schemes: [buildNoMatchResponse(profile, message)],
-      isSingle: true,
-      isEmpty: false,
-      source: 'error',
-      error: 'Unable to process your request at this time.'
-    });
+    return res.json({ summary, schemes, suggestions, isSingle: schemes.length === 1, isEmpty: false, source: 'live_only' });
+
+  } catch (e) {
+    console.error('[chat] unhandled:', e.message);
+    const nm = noMatchCard(profile, message);
+    return res.json({ summary: nm.summary, schemes: [nm], suggestions: fallbackSuggestions(profile), isSingle: true, isEmpty: true, source: 'error' });
   }
-});
-
-export default router;
+}

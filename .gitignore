@@ -8,6 +8,8 @@ dist/
 # Environment files
 .env
 citizen-ai-backend/.env
+citizen-ai-backend/data/*.sqlite
+citizen-ai-backend/data/*.sqlite-*
 
 # Editor directories and files
 .vscode/

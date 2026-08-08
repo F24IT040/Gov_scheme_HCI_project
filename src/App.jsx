@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Sidebar from './components/Sidebar';
 import WelcomeHero from './components/WelcomeHero';
 import QueryBubble from './components/QueryBubble';
@@ -12,6 +13,7 @@ import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import TypingIndicator from './components/TypingIndicator';
+import UserProfile from './components/UserProfile';
 
 const RIGHT_SIDEBAR_MIN_WIDTH = 320;
 const RIGHT_SIDEBAR_MAX_WIDTH = 560;
@@ -22,15 +24,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000
 const PAGE_STACK = ['landing', 'login', 'register', 'app'];
 
 export default function App() {
-  // Initialise login state from localStorage (remember-me)
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem('nayanta_logged_in') === '1';
-  });
-
-  // Start on app if already logged in, otherwise landing
-  const [page, setPageState] = useState(() => {
-    return localStorage.getItem('nayanta_logged_in') === '1' ? 'app' : 'landing';
-  });
+  const { i18n } = useTranslation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [page, setPageState] = useState('landing');
+  const [authChecked, setAuthChecked] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   // Wrap setPage so every navigation pushes a history entry
   const setPage = (nextPage) => {
@@ -50,6 +49,19 @@ export default function App() {
   const chatContainerRef = useRef(null);
   const rightSidebarResizeRef = useRef({ startX: 0, startWidth: RIGHT_SIDEBAR_MIN_WIDTH });
   const turnIdRef = useRef(0);
+  const lastSearchRef = useRef('');
+  const languageRef = useRef(i18n.language?.startsWith('hi') ? 'hi' : 'en');
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/auth/session`, { credentials: 'include' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('No active session');
+        return response.json();
+      })
+      .then((data) => { setCurrentUser(data.user); setIsLoggedIn(true); setPageState('app'); })
+      .catch(() => { setIsLoggedIn(false); })
+      .finally(() => setAuthChecked(true));
+  }, []);
 
   // Handle browser back/forward buttons — stay inside the SPA
   useEffect(() => {
@@ -78,22 +90,23 @@ export default function App() {
     setChatTurns([]);
   };
 
-  const handleSearch = async (rawQuery) => {
+  const handleSearch = async (rawQuery, { replaceResults = false } = {}) => {
     const query = rawQuery.trim();
     if (!query) return;
+
+    lastSearchRef.current = query;
 
     setViewMode('results');
     setSelectedScheme(null);
     setQueryInput('');
     const turnId = ++turnIdRef.current;
-    const conversationHistory = chatTurns.map((turn) => ({
+    const conversationHistory = replaceResults ? [] : chatTurns.map((turn) => ({
       role: 'user',
       content: turn.query
     }));
 
-    setChatTurns((currentTurns) => [
-      ...currentTurns,
-      {
+    setChatTurns((currentTurns) => {
+      const nextTurn = {
         id: turnId,
         query,
         summary: '',
@@ -103,18 +116,21 @@ export default function App() {
         isEmpty: false,
         loading: true,
         error: ''
-      }
-    ]);
+      };
+      return replaceResults ? [nextTurn] : [...currentTurns, nextTurn];
+    });
 
     try {
       const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message: query,
-          history: conversationHistory
+          history: conversationHistory,
+          language: i18n.language?.startsWith('hi') ? 'hi' : 'en'
         })
       });
 
@@ -183,6 +199,12 @@ export default function App() {
 
   const handleViewProcess = (scheme) => {
     setSelectedScheme(scheme);
+    // Don't open process page for no-match placeholder cards
+    if (
+      scheme?.isNoMatch ||
+      scheme?.id === '__no_match__' ||
+      (scheme?.confidence === 'Low' && !scheme?.official_url)
+    ) return;
     setViewMode('process');
   };
 
@@ -203,6 +225,10 @@ export default function App() {
     );
   };
 
+  const latestConversationText = [...chatTurns]
+    .reverse()
+    .find((turn) => !turn.loading && !turn.error && turn.summary)?.summary || '';
+
   const handleRightSidebarResizeStart = (event) => {
     if (window.innerWidth < 1024) return;
 
@@ -222,6 +248,17 @@ export default function App() {
       });
     }
   }, [chatTurns, selectedScheme]);
+
+  useEffect(() => {
+    const nextLanguage = i18n.language?.startsWith('hi') ? 'hi' : 'en';
+    if (languageRef.current === nextLanguage) return;
+    languageRef.current = nextLanguage;
+
+    if (lastSearchRef.current) {
+      setSelectedScheme(null);
+      handleSearch(lastSearchRef.current, { replaceResults: true });
+    }
+  }, [i18n.language]); // Re-query the last result in the newly selected language.
 
   // Fire pending query when we arrive at the app page
   const pendingQueryRef = useRef('');
@@ -271,27 +308,26 @@ export default function App() {
   }, [isResizingRightSidebar]);
 
   const handleSignIn = () => setPage('login');
-  const handleStartNow = () => setPage('app');
+  const handleStartNow = () => setPage(isLoggedIn ? 'app' : 'login');
   const handleRegister = () => setPage('register');
 
-  // Called after login or registration succeeds
-  // remember=true → persist across refresh; false → session only
-  const handleLoginSuccess = (remember = false) => {
+  // The backend has created a verified HttpOnly session cookie.
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user || null);
     setIsLoggedIn(true);
-    if (remember) {
-      localStorage.setItem('nayanta_logged_in', '1');
-    } else {
-      localStorage.removeItem('nayanta_logged_in');
-    }
-    setPage('app');
+    setPageState('app');
   };
 
   // Logout helper (clears persistence)
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
     setIsLoggedIn(false);
-    localStorage.removeItem('nayanta_logged_in');
+    setCurrentUser(null);
+    setShowProfile(false);
     setPage('landing');
   };
+
+  if (!authChecked) return null;
 
   // Called when a category card is clicked on the landing page
   const handleCardClick = (query) => {
@@ -318,6 +354,10 @@ export default function App() {
     return <RegisterPage onBack={() => setPage('login')} onSubmit={() => handleLoginSuccess(false)} onLogin={() => setPage('login')} />;
   }
 
+  if (!isLoggedIn) {
+    return <LoginPage onBack={() => setPage('landing')} onLogin={handleLoginSuccess} onRegister={handleRegister} />;
+  }
+
   return (
     <div className="app-shell flex w-full">
 
@@ -334,7 +374,11 @@ export default function App() {
         onCategorySelect={handleCategorySelect}
         activeCategory={activeCategory}
         onLogout={handleLogout}
+        user={currentUser}
+        onProfile={() => setShowProfile(true)}
       />
+
+      {showProfile && <UserProfile user={currentUser} onClose={() => setShowProfile(false)} />}
 
       {/* Main Container */}
       <main className="flex min-w-0 flex-1 flex-col h-full">
@@ -418,6 +462,7 @@ export default function App() {
       {/* Right Sidebar Inspector */}
       <RightSidebar
         selectedScheme={selectedScheme}
+        conversationText={latestConversationText}
         width={rightSidebarWidth}
         isExpanded={rightSidebarWidth > RIGHT_SIDEBAR_MIN_WIDTH}
         onToggleExpand={handleRightSidebarToggle}

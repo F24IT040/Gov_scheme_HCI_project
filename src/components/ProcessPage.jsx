@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* ─── Static workflow stages ─────────────────────────────────────────── */
 const WORKFLOW = [
@@ -288,6 +289,20 @@ function AppFlow({ blocks, portal, intro, note, schemeName }) {
 
 /* ─── Main ───────────────────────────────────────────────────────────── */
 export default function ProcessPage({ scheme, onBack }) {
+  const { t, i18n } = useTranslation();
+  const isHindi = i18n.language?.startsWith('hi');
+  const workflowText = [
+    ['eligibilityCheck', 'eligibilitySubtitle', 'confirmEligibility'],
+    ['documents', 'documentsSubtitle', 'confirmDocuments'],
+    ['application', 'applicationSubtitle', 'continue'],
+    ['completeStep', 'completeSubtitle', 'finish'],
+  ];
+  const workflow = WORKFLOW.map((item, index) => ({
+    ...item,
+    title: t(`process.${workflowText[index][0]}`),
+    subtitle: t(`process.${workflowText[index][1]}`),
+    action: t(`process.${workflowText[index][2]}`),
+  }));
   const [activeIdx,  setActiveIdx]  = useState(0);
   const [viewedIdx,  setViewedIdx]  = useState(0);
   const [processing, setProcessing] = useState(false);
@@ -304,20 +319,45 @@ export default function ProcessPage({ scheme, onBack }) {
     (Array.isArray(scheme?.process_steps)       && scheme.process_steps.length)       ? scheme.process_steps :
     (Array.isArray(scheme?.steps)               && scheme.steps.length)               ? scheme.steps : null;
 
-  const appFlow = rawSteps
-    ? rawSteps.map((s, i) => ({ id: `s${i}`, title: String(s).replace(/^\d+[\.\)]\s*/,'').slice(0,70), source: `Step ${i+1}`, icon: ICONS[i]||'arrow_forward', status: i===0?'active':'future' }))
-    : FALLBACK.applicationFlow;
+  const genericSteps = isHindi
+    ? [
+        'पोर्टल खोलें — आधिकारिक वेबसाइट खोलें और नई आवेदन/पंजीकरण सेवा चुनें।',
+        'पंजीकरण करें — मोबाइल नंबर और पहचान विवरण दर्ज करें, फिर OTP से सत्यापन पूरा करें।',
+        'आवेदन भरें — व्यक्तिगत, बैंक और योजना से जुड़ी जानकारी सावधानी से दर्ज करें।',
+        'दस्तावेज़ अपलोड करें — साफ़ और वैध दस्तावेज़ सही श्रेणी में अपलोड करके दोबारा जाँचें।',
+        'जाँचकर जमा करें — सभी विवरण सत्यापित करें, आवेदन जमा करें और रसीद/आवेदन संख्या सुरक्षित रखें।',
+      ]
+    : [
+        'Open the portal — Visit the official website and choose the new application or registration service.',
+        'Register — Enter your mobile number and identity details, then complete OTP verification.',
+        'Complete the form — Fill in your personal, bank, and scheme information carefully.',
+        'Upload documents — Upload clear, valid documents in the correct category and review them.',
+        'Review and submit — Verify every detail, submit the application, and save the acknowledgement number.',
+      ];
+  const detailedSteps = rawSteps?.length >= 5 ? rawSteps : [...(rawSteps || []), ...genericSteps].slice(0, 5);
+  const appFlow = detailedSteps.map((value, i) => {
+    const clean = String(value).replace(/^\s*(?:step|चरण)?\s*\d+\s*[:.\)-]?\s*/i, '').trim();
+    const [title, ...description] = clean.split(/\s*[—–-]\s*/);
+    return {
+      id: `s${i}`,
+      title: title.slice(0, 70),
+      description: description.join(' — ') || clean,
+      source: `${isHindi ? 'चरण' : 'Step'} ${i + 1}`,
+      icon: ICONS[i] || 'arrow_forward',
+      status: i === 0 ? 'active' : 'future',
+    };
+  });
 
   const sc = {
     eligibility: scheme?.eligibility?.length       ? scheme.eligibility       : FALLBACK.eligibilityCriteria,
     documents:   scheme?.documents?.length         ? scheme.documents         : (scheme?.required_documents?.length ? scheme.required_documents : FALLBACK.requiredDocuments),
     portal,
-    appIntro:    rawSteps ? `Walk through the official ${schemeName} application steps below.` : '',
+    appIntro:    isHindi ? `${schemeName} के आधिकारिक आवेदन चरण नीचे दिए गए हैं।` : `Walk through the official ${schemeName} application steps below.`,
     appNote:     scheme?.benefit || FALLBACK.applicationNote,
     appFlow,
   };
 
-  const total       = WORKFLOW.length;
+  const total       = workflow.length;
   const progressPct = completed ? 100 : Math.round(((activeIdx + 1) / total) * 100);
   const linePct     = completed ? 100 : ((activeIdx + 0.5) / total) * 100;
 
@@ -328,7 +368,7 @@ export default function ProcessPage({ scheme, onBack }) {
   const checklistDone = (items, key) =>
     items.length > 0 && items.every((_, i) => checklist.has(`${viewedIdx}-${key}-${i}`));
 
-  const step     = WORKFLOW[viewedIdx];
+  const step     = workflow[viewedIdx];
   const isActive = viewedIdx === activeIdx && !completed;
   const isDone   = viewedIdx < activeIdx || completed;
 
@@ -360,10 +400,10 @@ export default function ProcessPage({ scheme, onBack }) {
         <div className="flex items-center justify-between mb-8">
           <button onClick={onBack}
             className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors px-3 py-2 rounded-lg hover:bg-white">
-            <Icon n="arrow_back" cls="text-[18px]" /> Back to results
+            <Icon n="arrow_back" cls="text-[18px]" /> {t('process.backToResults')}
           </button>
           <div className="flex items-center gap-3">
-            <span className="text-xs font-medium text-slate-400">{progressPct}% complete</span>
+            <span className="text-xs font-medium text-slate-400">{progressPct}% {t('process.complete')}</span>
             <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all duration-700" style={{ width:`${progressPct}%`, background:'#dca1a1' }} />
             </div>
@@ -373,10 +413,10 @@ export default function ProcessPage({ scheme, onBack }) {
         {/* ── Header ── */}
         <div className="mb-8">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-3" style={{ background:'#faefef', color:'#884e4f' }}>
-            <Icon n="account_balance" cls="text-[14px]" /> Process Simulator
+            <Icon n="account_balance" cls="text-[14px]" /> {t('process.simulator')}
           </span>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">{schemeName}</h1>
-          <p className="mt-1.5 text-slate-500 text-sm">Complete each stage to understand the full application journey.</p>
+          <p className="mt-1.5 text-slate-500 text-sm">{t('process.subtitle')}</p>
         </div>
 
         {/* ── Journey stepper ── */}
@@ -387,7 +427,7 @@ export default function ProcessPage({ scheme, onBack }) {
             <div className="absolute top-5 left-5 h-0.5 rounded-full transition-all duration-700" style={{ width:`calc(${linePct}% - 20px)`, background:'#dca1a1' }} />
 
             <div className="relative flex justify-between gap-2">
-              {WORKFLOW.map((s, i) => {
+              {workflow.map((s, i) => {
                 const done2   = completed || i < activeIdx;
                 const active2 = i === activeIdx && !completed;
                 const viewed  = i === viewedIdx;
@@ -431,7 +471,7 @@ export default function ProcessPage({ scheme, onBack }) {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                    Step {viewedIdx + 1} of {total}
+                    {isHindi ? `चरण ${viewedIdx + 1} / ${total}` : `Step ${viewedIdx + 1} of ${total}`}
                   </p>
                   <h2 className="text-lg font-bold text-slate-900">{step.title}</h2>
                   <p className="text-xs text-slate-400">{step.subtitle}</p>
@@ -458,24 +498,24 @@ export default function ProcessPage({ scheme, onBack }) {
                     <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mb-5">
                       <Icon n="check_circle" cls="text-5xl text-emerald-500" />
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Tutorial Complete!</h3>
-                    <p className="text-slate-500 mb-6 max-w-sm">You've walked through the full application process for {schemeName}.</p>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{t('process.tutorialComplete')}</h3>
+                    <p className="text-slate-500 mb-6 max-w-sm">{t('process.tutorialCompleteDesc')} {schemeName}.</p>
                     {sc.portal && (
                       <a href={sc.portal} target="_blank" rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90"
                         style={{ background: '#c68d8d' }}>
-                        Apply on Official Portal <Icon n="open_in_new" cls="text-[16px]" />
+                        {t('process.applyOnPortal')} <Icon n="open_in_new" cls="text-[16px]" />
                       </a>
                     )}
                   </div>
                 ) : (
                   <>
                     {step.detailType === 'eligibility' && (
-                      <Checklist title="Eligibility Criteria" items={sc.eligibility}
+                      <Checklist title={t('process.eligibilityCheck')} items={sc.eligibility}
                         stepIdx={viewedIdx} ck="el" state={checklist} onToggle={toggleCheck} />
                     )}
                     {step.detailType === 'documents' && (
-                      <Checklist title="Required Documents" items={sc.documents}
+                      <Checklist title={t('process.documents')} items={sc.documents}
                         stepIdx={viewedIdx} ck="doc" state={checklist} onToggle={toggleCheck} />
                     )}
                     {step.detailType === 'application' && (
@@ -486,7 +526,7 @@ export default function ProcessPage({ scheme, onBack }) {
                       <div className="pp-card p-5 bg-slate-50 text-center">
                         <Icon n="flag" cls="text-5xl text-[#c68d8d] mb-3" />
                         <h4 className="text-lg font-bold text-slate-900 mb-1">Almost there!</h4>
-                        <p className="text-sm text-slate-500 mb-4">Click below to mark the tutorial as complete.</p>
+                        <p className="text-sm text-slate-500 mb-4">{isHindi ? 'ट्यूटोरियल पूर्ण करने के लिए नीचे दिए बटन पर क्लिक करें।' : 'Click below to mark the tutorial as complete.'}</p>
                       </div>
                     )}
                   </>
@@ -500,9 +540,9 @@ export default function ProcessPage({ scheme, onBack }) {
                     className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-sm font-bold transition-all active:scale-[.98]"
                     style={locked ? { background:'#f1f5f9', color:'#94a3b8', cursor:'not-allowed' } : { background:'#c68d8d', color:'#fff' }}>
                     {processing
-                      ? <><Icon n="progress_activity" cls="text-[20px] animate-spin" /> Processing...</>
+                      ? <><Icon n="progress_activity" cls="text-[20px] animate-spin" /> {t('process.processing')}</>
                       : locked
-                        ? <><Icon n="lock" cls="text-[18px]" /> Check all items to continue</>
+                        ? <><Icon n="lock" cls="text-[18px]" /> {t('process.checkAll')}</>
                         : <>{step.action} <Icon n="arrow_forward" cls="text-[18px]" /></>
                     }
                   </button>

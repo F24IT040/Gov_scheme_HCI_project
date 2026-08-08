@@ -1,44 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
-
-const HIGHLIGHTS = [
-  '3 new scholarship schemes added',
-  'Housing subsidy applications open',
-  'Check your pension eligibility',
-];
-
-const SUBTITLES = [
-  'Discover government schemes faster',
-  'Know your eligibility instantly',
-  'Simplify application processes',
-];
-
-const LOGIN_STEPS = [
-  'Checking profile...',
-  'Matching citizen information...',
-  'Preparing personalized dashboard...',
-];
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage({ onBack, onLogin, onRegister }) {
-  const cursorGlowRef    = useRef(null);
-  const parallaxOrbsRef  = useRef(null);
-  const parallaxGridRef  = useRef(null);
+  const { t, i18n } = useTranslation();
+
+  const cursorGlowRef   = useRef(null);
+  const parallaxOrbsRef = useRef(null);
+  const parallaxGridRef = useRef(null);
   const parallaxLinesRef = useRef(null);
 
-  const [mobile, setMobile]             = useState('');
-  const [remember, setRemember]         = useState(false);
+  const [mobile,      setMobile]      = useState('');
+  const [error,       setError]       = useState('');
+  const [remember,    setRemember]    = useState(false);
   const [highlightIdx, setHighlightIdx] = useState(0);
-  const [subtitleIdx, setSubtitleIdx]   = useState(0);
   const [highlightOut, setHighlightOut] = useState(false);
-  const [subtitleOut, setSubtitleOut]   = useState(false);
-  const [btnLabel, setBtnLabel]         = useState('Login');
-  const [btnSpin, setBtnSpin]           = useState(false);
-  const [btnCheck, setBtnCheck]         = useState(false);
-  const [btnSuccess, setBtnSuccess]     = useState(false);
-  const [showOverlay, setShowOverlay]   = useState(false);
-  const [progress, setProgress]         = useState(0);
-  const [loadingTip, setLoadingTip]     = useState('Checking eligibility...');
-  const [busy, setBusy]                 = useState(false);
+  const [btnLabel,    setBtnLabel]    = useState('');
+  const [btnSpin,     setBtnSpin]     = useState(false);
+  const [btnCheck,    setBtnCheck]    = useState(false);
+  const [btnSuccess,  setBtnSuccess]  = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [progress,    setProgress]    = useState(0);
+  const [loadingTip,  setLoadingTip]  = useState('');
+  const [busy,        setBusy]        = useState(false);
 
+  /* Update btn label on language change */
+  useEffect(() => { setBtnLabel(t('login.login')); }, [t]);
+  useEffect(() => { setLoadingTip(t('login.overlayTip1')); }, [t]);
+
+  const HIGHLIGHTS = [t('login.highlight1'), t('login.highlight2'), t('login.highlight3')];
+  const LOGIN_STEPS = [t('login.step1'), t('login.step2'), t('login.step3')];
+
+  /* Parallax */
   useEffect(() => {
     const cursor = cursorGlowRef.current;
     const orbs   = parallaxOrbsRef.current;
@@ -69,193 +61,262 @@ export default function LoginPage({ onBack, onLogin, onRegister }) {
     };
   }, []);
 
+  /* Rotating highlights */
   useEffect(() => {
     const id = setInterval(() => {
       setHighlightOut(true);
-      setTimeout(() => { setHighlightIdx(i => (i + 1) % HIGHLIGHTS.length); setHighlightOut(false); }, 500);
-    }, 5000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setSubtitleOut(true);
-      setTimeout(() => { setSubtitleIdx(i => (i + 1) % SUBTITLES.length); setSubtitleOut(false); }, 500);
+      setTimeout(() => { setHighlightIdx(i => (i + 1) % HIGHLIGHTS.length); setHighlightOut(false); }, 400);
     }, 4000);
     return () => clearInterval(id);
-  }, []);
+  }, [HIGHLIGHTS.length]);
 
-  const handleMobile = (e) => { const v = e.target.value.replace(/\D/g,''); setMobile(v.slice(0,10)); };
+  const handleMobile = (e) => {
+    setMobile(e.target.value.replace(/\D/g, '').slice(0, 10));
+  };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (busy) return;
-    setBusy(true); let step = 0; setBtnSpin(true); setBtnLabel(LOGIN_STEPS[0]);
+    setError('');
+    if (mobile.length !== 10) {
+      setError('Enter your registered 10-digit mobile number.');
+      return;
+    }
+    setBusy(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/auth/login`, {
+        method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || 'Sign in failed.');
+      onLogin(data.user);
+    } catch (loginError) {
+      setError(loginError.message || 'Sign in failed.');
+    } finally {
+      setBusy(false);
+    }
+    /*
+    let step = 0;
+    setBtnSpin(true);
+    setBtnLabel(LOGIN_STEPS[0]);
     const seq = setInterval(() => {
       step++;
-      if (step < LOGIN_STEPS.length) { setBtnLabel(LOGIN_STEPS[step]); }
-      else {
-        clearInterval(seq); setBtnSpin(false); setBtnCheck(true); setBtnSuccess(true); setBtnLabel('Login Successful');
+      if (step < LOGIN_STEPS.length) {
+        setBtnLabel(LOGIN_STEPS[step]);
+      } else {
+        clearInterval(seq);
+        setBtnSpin(false); setBtnCheck(true); setBtnSuccess(true);
+        setBtnLabel(t('login.loginSuccessful'));
         setTimeout(() => {
           setShowOverlay(true);
           setTimeout(() => {
             setProgress(100);
-            setTimeout(() => setLoadingTip('Loading saved recommendations...'), 1000);
+            setTimeout(() => setLoadingTip(t('login.overlayTip2')), 1000);
             setTimeout(() => {
-              setShowOverlay(false); setProgress(0); setBtnLabel('Login'); setBtnSpin(false);
-              setBtnCheck(false); setBtnSuccess(false); setBusy(false); setLoadingTip('Checking eligibility...');
+              setShowOverlay(false); setProgress(0);
+              setBtnLabel(t('login.login')); setBtnSpin(false);
+              setBtnCheck(false); setBtnSuccess(false); setBusy(false);
+              setLoadingTip(t('login.overlayTip1'));
               onLogin(remember);
-            }, 2000);
+            }, 2200);
           }, 100);
         }, 500);
       }
     }, 800);
+    */
+  };
+
+  /* Language toggle — same pill as landing */
+  const activeLang = i18n.language?.slice(0, 2) || 'en';
+  const handleLang = (code) => {
+    i18n.changeLanguage(code);
+    localStorage.setItem('nayanta_lang', code);
   };
 
   return (
     <div className="relative min-h-screen w-full flex overflow-x-hidden antialiased" style={{ backgroundColor: '#F9F4EA', color: '#0F172A' }}>
-      <div className="bg-grain" />
+      <div className="bg-grain"/>
       <div ref={parallaxOrbsRef} className="fixed pointer-events-none overflow-hidden z-[-3]"
         style={{ inset:0,width:'110%',height:'110%',left:'-5%',top:'-5%',willChange:'transform',transition:'transform 0.1s cubic-bezier(0.2,0,0.2,1)' }}>
         <div className="orb orb-1"/><div className="orb orb-2"/><div className="orb orb-3"/>
       </div>
-      <div ref={parallaxGridRef} className="bg-grid" style={{ willChange:'transform',transition:'transform 0.1s cubic-bezier(0.2,0,0.2,1)' }}/>
+      <div ref={parallaxGridRef}  className="bg-grid"  style={{ willChange:'transform',transition:'transform 0.1s cubic-bezier(0.2,0,0.2,1)' }}/>
       <div ref={parallaxLinesRef} className="bg-lines" style={{ willChange:'transform',transition:'transform 0.1s cubic-bezier(0.2,0,0.2,1)' }}/>
-      <div ref={cursorGlowRef} style={{ position:'fixed',top:0,left:0,width:600,height:600,borderRadius:'50%',pointerEvents:'none',zIndex:-2,willChange:'transform',opacity:0,transition:'opacity 0.3s ease',transform:'translate(-50%,-50%)',background:'radial-gradient(circle,rgba(220,161,161,0.15) 0%,rgba(220,161,161,0) 60%)' }}/>
+      <div ref={cursorGlowRef} style={{ position:'fixed',top:0,left:0,width:600,height:600,borderRadius:'50%',pointerEvents:'none',zIndex:-2,willChange:'transform',opacity:0,transition:'opacity 0.3s ease',transform:'translate(-50%,-50%)',background:'radial-gradient(circle,rgba(198,141,141,0.14) 0%,rgba(198,141,141,0) 60%)' }}/>
 
-      {/* LEFT PANEL */}
-      <div className="w-full lg:w-[45%] min-h-screen flex flex-col relative z-10 px-10 lg:px-24 py-16">
-        <div className="mb-12 animate-fade-in-up opacity-0">
-          <button onClick={onBack} className="mb-6 flex items-center gap-1.5 text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">
-            <i className="fa-solid fa-arrow-left text-[11px]"/> Back to home
+      {/* ── LEFT PANEL ── */}
+      <div className="w-full lg:w-[48%] min-h-screen flex flex-col relative z-10 px-8 lg:px-20 py-14">
+
+        {/* Top row: back + lang */}
+        <div className="flex items-center justify-between mb-10 animate-fade-in-up opacity-0">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">
+            <i className="fa-solid fa-arrow-left text-[11px]"/>
+            {t('login.backHome')}
           </button>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative w-10 h-10 rounded-[12px] bg-gradient-to-br from-brand-600 via-brand-500 to-brand-accent flex items-center justify-center shadow-lg shadow-brand-500/30 overflow-hidden">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="relative z-10">
-                <path d="M5.5 19V6.5C5.5 5.67157 6.17157 5 7 5H8.5C9.32843 5 10 5.67157 10 6.5V14.5L14.7 5.25C15.1 4.45 15.9 4 16.8 4H17C17.8284 4 18.5 4.67157 18.5 5.5V19C18.5 19.8284 17.8284 20.5 17 20.5H15.5C14.6716 20.5 14 19.8284 14 19V10L8.8 19.75C8.4 20.55 7.6 21 6.7 21H6.5C5.67157 21 5.5 20.3284 5.5 19Z" fill="white"/>
-              </svg>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[22px] font-bold tracking-tight text-slate-900 leading-none" style={{letterSpacing:'-0.03em'}}>Nayanta</span>
-              <span className="text-[10.5px] font-semibold text-slate-500/80 mt-0.5 tracking-wide uppercase">Government Guide</span>
-            </div>
+
+          {/* EN / HI pill */}
+          <div className="flex items-center rounded-full border border-slate-200 bg-white p-0.5 shadow-sm">
+            {[{ code: 'en', label: 'EN' }, { code: 'hi', label: 'हि' }].map(({ code, label }) => (
+              <button key={code} onClick={() => handleLang(code)}
+                className="rounded-full px-3 py-1 text-[12px] font-bold transition-all"
+                style={activeLang === code ? { background: 'var(--brand-600)', color: '#fff' } : { color: 'rgb(100,110,130)' }}>
+                {label}
+              </button>
+            ))}
           </div>
-          <h1 className="text-[36px] sm:text-[42px] font-extrabold leading-[1.1] tracking-tight text-slate-900 mb-3">Welcome back 👋</h1>
-          <p className="text-[15px] text-slate-500 max-w-md leading-relaxed font-medium">Continue exploring government schemes personalized for you.</p>
+
+          {error && <p className="mb-4 rounded-xl bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">{error}</p>}
         </div>
 
-        {/* Glass card */}
-        <div className="animate-fade-in-up opacity-0 delay-100 glass-panel rounded-[28px] p-8 relative w-full max-w-md shadow-glass transition-transform duration-300 hover:shadow-float-hover">
-          <div className="absolute top-6 right-6">
-            <button className="flex items-center gap-1.5 text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">
-              <i className="fa-solid fa-globe text-[14px]"/><span>English</span><i className="fa-solid fa-chevron-down text-[10px] opacity-60"/>
-            </button>
+        {/* Logo + headline */}
+        <div className="mb-8 animate-fade-in-up opacity-0 delay-100">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-[11px] flex items-center justify-center shadow-md" style={{ background: 'linear-gradient(135deg, var(--brand-600), var(--brand-accent))' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M5.5 19V6.5C5.5 5.67 6.17 5 7 5H8.5C9.33 5 10 5.67 10 6.5V14.5L14.7 5.25C15.1 4.45 15.9 4 16.8 4H17C17.83 4 18.5 4.67 18.5 5.5V19C18.5 19.83 17.83 20.5 17 20.5H15.5C14.67 20.5 14 19.83 14 19V10L8.8 19.75C8.4 20.55 7.6 21 6.7 21H6.5C5.67 21 5.5 20.33 5.5 19Z" fill="white"/>
+              </svg>
+            </div>
+            <div>
+              <span className="text-[20px] font-bold text-slate-900 leading-none" style={{ letterSpacing: '-0.02em' }}>Nayanta</span>
+              <p className="text-[9px] font-semibold text-slate-500/70 uppercase tracking-widest mt-0.5">Government Guide</p>
+            </div>
           </div>
-          <div className="mb-6">
-            <label className="block text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-2">Mobile Number</label>
-            <div className="flex items-center bg-white/70 backdrop-blur-sm rounded-[16px] h-14 px-5 shadow-input transition-all focus-within:shadow-input-focus relative">
-              <span className="text-slate-500 text-[15px] font-medium mr-2">+91</span>
-              <input type="tel" inputMode="numeric" value={mobile} onChange={handleMobile} placeholder="Enter mobile number" className="w-full bg-transparent border-none focus:outline-none text-slate-800 text-[15px]"/>
+          <h1 className="text-[34px] sm:text-[40px] font-extrabold leading-[1.1] tracking-tight text-slate-900 mb-2">
+            {t('login.welcomeBack')}
+          </h1>
+          <p className="text-[14px] text-slate-500 leading-relaxed font-medium">{t('login.subtitle')}</p>
+        </div>
+
+        {/* Glass form card */}
+        <div className="animate-fade-in-up opacity-0 delay-200 glass-panel rounded-[26px] p-7 w-full max-w-md">
+
+          {/* Mobile input */}
+          <div className="mb-5">
+            <label className="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">
+              {t('login.mobileLabel')}
+            </label>
+            <div className="flex items-center bg-white/70 backdrop-blur-sm rounded-[14px] h-13 px-4 shadow-input transition-all focus-within:shadow-input-focus relative" style={{ height: '52px' }}>
+              <span className="text-slate-500 text-[14px] font-semibold mr-2 shrink-0">+91</span>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={mobile}
+                onChange={handleMobile}
+                placeholder={t('login.mobilePlaceholder')}
+                className="w-full bg-transparent border-none focus:outline-none text-slate-800 text-[15px]"
+              />
               {mobile.length >= 10 && (
-                <svg className="w-5 h-5 text-emerald-500 absolute right-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray:50,strokeDashoffset:0,transition:'stroke-dashoffset 0.4s ease' }}/>
+                <svg className="w-5 h-5 text-emerald-500 absolute right-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
             </div>
-            <p className="text-[12px] text-brand-600/80 mt-2">Registered mobile number used during profile creation.</p>
-            <div className="flex items-center gap-2 mt-4">
-              <input type="checkbox" id="remember-me" checked={remember} onChange={()=>setRemember(r=>!r)} className="w-4 h-4 text-brand-600 bg-white border-slate-300 rounded focus:ring-brand-500 focus:ring-2"/>
-              <label htmlFor="remember-me" className="text-[13px] text-slate-500 font-medium cursor-pointer">Keep me signed in on this device</label>
-            </div>
+            <p className="text-[11px] mt-1.5" style={{ color: 'var(--brand-600)', opacity: 0.8 }}>
+              {t('login.mobileHint')}
+            </p>
           </div>
-          <div className="mb-6 bg-brand-50/70 border border-brand-100 rounded-[14px] p-3 h-[48px] flex items-center overflow-hidden">
-            <i className="fa-solid fa-bell text-brand-500 text-[15px] mr-2 flex-shrink-0"/>
-            <p className="text-[13px] font-medium text-brand-700 transition-all duration-500" style={{ opacity:highlightOut?0:1,transform:highlightOut?'translateY(-8px)':'translateY(0)' }}>
+
+          {/* Remember me */}
+          <div className="flex items-center gap-2 mb-5">
+            <input type="checkbox" id="remember-me" checked={remember} onChange={() => setRemember(r => !r)}
+              className="w-4 h-4 rounded border-slate-300 accent-brand-600 cursor-pointer"/>
+            <label htmlFor="remember-me" className="text-[13px] text-slate-500 font-medium cursor-pointer">
+              {t('login.rememberMe')}
+            </label>
+          </div>
+
+          {/* Notification ticker */}
+          <div className="mb-5 rounded-[12px] border px-3 py-2.5 flex items-center gap-2 overflow-hidden" style={{ background: 'var(--brand-50)', borderColor: 'var(--brand-100)', minHeight: '44px' }}>
+            <i className="fa-solid fa-bell shrink-0 text-[13px]" style={{ color: 'var(--brand-600)' }}/>
+            <p className="text-[12px] font-medium transition-all duration-400"
+              style={{ color: 'var(--brand-700)', opacity: highlightOut ? 0 : 1, transform: highlightOut ? 'translateY(-6px)' : 'translateY(0)' }}>
               {HIGHLIGHTS[highlightIdx]}
             </p>
           </div>
-          <button onClick={handleLogin} disabled={busy}
-            className={`w-full text-white text-[13px] font-bold uppercase tracking-wider rounded-full py-4 transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 ${btnSuccess?'bg-emerald-500':'bg-brand-600 hover:bg-brand-500 hover:-translate-y-0.5'} ${busy?'pointer-events-none':''}`}>
-            <span>{btnLabel}</span>
-            {btnSpin&&<i className="fa-solid fa-arrows-rotate animate-spin text-[13px]"/>}
-            {btnCheck&&!btnSpin&&<i className="fa-solid fa-check text-[13px]"/>}
-            {!btnSpin&&!btnCheck&&<i className="fa-solid fa-arrow-right text-[13px]"/>}
+
+          {/* Login button */}
+          <button
+            onClick={handleLogin}
+            disabled={busy}
+            className={`w-full text-white text-[13px] font-bold tracking-wider rounded-full py-3.5 transition-all shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 ${btnSuccess ? 'bg-emerald-500' : 'hover:-translate-y-0.5'} ${busy ? 'pointer-events-none' : ''}`}
+            style={!btnSuccess ? { background: 'linear-gradient(135deg, var(--brand-600), var(--brand-accent))' } : {}}
+          >
+            <span>{btnLabel || t('login.login')}</span>
+            {btnSpin  && <i className="fa-solid fa-arrows-rotate animate-spin text-[12px]"/>}
+            {btnCheck && !btnSpin && <i className="fa-solid fa-check text-[12px]"/>}
+            {!btnSpin && !btnCheck && <i className="fa-solid fa-arrow-right text-[12px]"/>}
           </button>
-          <div className="flex justify-center gap-6 mt-8 border-t border-slate-200/60 pt-6">
-            <button onClick={onRegister} className="text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">Create New Account</button>
-            <a href="#" className="text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">Need Help?</a>
+
+          {/* Footer links */}
+          <div className="flex justify-center gap-6 mt-6 pt-5 border-t border-slate-200/50">
+            <button onClick={onRegister} className="text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">
+              {t('login.createAccount')}
+            </button>
+            <a href="#" className="text-[13px] font-medium text-slate-500 hover:text-brand-600 transition-colors">
+              {t('login.needHelp')}
+            </a>
           </div>
         </div>
-        <div className="mt-8 max-w-md animate-fade-in-up opacity-0 delay-200">
-          <p className="text-[13px] text-slate-500 leading-relaxed text-center px-4 font-medium">Sign in to access your saved schemes, personalized recommendations, eligibility history, and document checklists.</p>
-        </div>
+
+        {/* Trust note */}
+        <p className="mt-6 max-w-md text-[12px] text-slate-400 text-center leading-relaxed animate-fade-in-up opacity-0 delay-300">
+          {t('login.trustNote')}
+        </p>
       </div>
 
-      {/* RIGHT PANEL */}
-      <div className="hidden lg:flex w-[55%] min-h-screen flex-col p-12 py-16 border-l border-slate-200/50 z-10 relative">
-        <div className="relative z-10 flex flex-col h-full max-w-2xl mx-auto w-full">
-          <div className="mb-10 text-center animate-fade-in-up opacity-0 delay-100">
+      {/* ── RIGHT PANEL ── */}
+      <div className="hidden lg:flex w-[52%] min-h-screen flex-col items-center justify-center p-12 border-l border-slate-200/40 z-10 relative">
+        <div className="relative z-10 flex flex-col items-center text-center max-w-md w-full gap-8 animate-fade-in-up opacity-0 delay-200">
+
+          {/* Headline */}
+          <div>
             <div className="mb-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-slate-200/60">
-              <i className="fa-solid fa-sparkles text-brand-500 text-[13px] animate-pulse-slow"/>
-              <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-slate-700">AI-Powered <span className="text-slate-300 mx-1">•</span> Citizen First</span>
+              <i className="fa-solid fa-sparkles text-[12px] animate-pulse-slow" style={{ color: 'var(--brand-500)' }}/>
+              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-slate-700">{t('login.rightSub')}</span>
             </div>
-            <h2 className="text-[30px] sm:text-[34px] font-extrabold leading-[1.15] tracking-tight text-slate-900 mb-4">
-              Your Personal Government{' '}
-              <span style={{ background:'linear-gradient(135deg,#c68d8d 0%,#b87777 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text' }}>
-                Scheme Assistant
+            <h2 className="text-[28px] font-extrabold leading-tight tracking-tight text-slate-900">
+              {t('login.rightTitle')}{' '}
+              <span style={{ background: 'linear-gradient(135deg, var(--brand-600), var(--brand-accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                {t('login.rightTitleHighlight')}
               </span>
             </h2>
-            <div className="relative h-[28px] overflow-hidden">
-              <p className="text-[15px] text-slate-500 max-w-lg mx-auto font-medium transition-all duration-500"
-                style={{ opacity:subtitleOut?0:1,transform:subtitleOut?'translateY(10px)':'translateY(0)' }}>
-                {SUBTITLES[subtitleIdx]}
-              </p>
-            </div>
           </div>
 
-          <div className="flex-grow flex items-center justify-center relative w-full mb-12 min-h-[300px] animate-fade-in-up opacity-0 delay-200">
-            <img src="https://lh3.googleusercontent.com/aida/AP1WRLtjLbWvRGjYNZLYM66wW6FxF6RParNvJr8bB-82HfT0sjmMKZX64d0dBmVz0gqhtTj2SuFhMOaiTU0BsaBg3g6nqliINi_DWwhz3wxH0GO5xKZqBxOIEl5WHQnoVTKVfo4_D9uOIGXtJmtdsqz5c_Fq3iri9tNjd973sbdQTma9hdpmFGs6zwZ_1qcOrB2tGspigQvsrZzh7L8_u4DzaOPpsVGzgcEKe3VctIWWtKou7xwG91x28Hw1WJ0"
-              alt="Citizens interacting with digital government services"
-              className="object-contain w-full h-full max-h-[50vh] drop-shadow-sm mix-blend-multiply"/>
-            <div className="absolute bottom-4 right-4 px-4 py-2 rounded-2xl rounded-br-sm shadow-lg flex items-center gap-2 cursor-pointer hover:shadow-xl transition-shadow animate-float"
-              style={{ background:'linear-gradient(135deg,rgba(255,255,255,0.75) 0%,rgba(255,255,255,0.55) 100%)',backdropFilter:'blur(18px)',border:'1px solid rgba(255,255,255,0.6)' }}>
-              <span className="text-xl">🤖</span>
-              <span className="text-[13px] font-semibold text-slate-800">Hello! Need help?</span>
-            </div>
+          {/* Illustration */}
+          <div className="w-full max-w-sm rounded-[22px] overflow-hidden shadow-float border border-white/60 bg-white">
+            <img
+              src="https://lh3.googleusercontent.com/aida/AP1WRLtjLbWvRGjYNZLYM66wW6FxF6RParNvJr8bB-82HfT0sjmMKZX64d0dBmVz0gqhtTj2SuFhMOaiTU0BsaBg3g6nqliINi_DWwhz3wxH0GO5xKZqBxOIEl5WHQnoVTKVfo4_D9uOIGXtJmtdsqz5c_Fq3iri9tNjd973sbdQTma9hdpmFGs6zwZ_1qcOrB2tGspigQvsrZzh7L8_u4DzaOPpsVGzgcEKe3VctIWWtKou7xwG91x28Hw1WJ0"
+              alt="Nayanta assistant"
+              className="w-full object-cover mix-blend-multiply"
+              style={{ maxHeight: '340px' }}
+            />
           </div>
 
-          <div className="glass-panel rounded-[24px] p-6 mb-8 shadow-glass animate-fade-in-up opacity-0 delay-300">
-            <ul className="space-y-4">
-              {[
-                { icon:'fa-shield-halved', text:'Personalized recommendations based on your saved profile.' },
-                { icon:'fa-file-lines',    text:'Information is sourced from official government portals.' },
-                { icon:'fa-wand-magic-sparkles', text:'AI explains schemes in simple language.' },
-                { icon:'fa-triangle-exclamation', text:'Final applications are always completed on official government websites.' },
-              ].map(({icon,text},i)=>(
-                <li key={i} className="flex items-start gap-3 p-2 rounded-lg border border-transparent hover:border-brand-200 hover:-translate-y-0.5 transition-all duration-300 cursor-default">
-                  <i className={`fa-solid ${icon} text-brand-500 mt-0.5 text-[18px]`}/>
-                  <span className="text-[14px] text-slate-600 font-medium">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="text-center mt-auto">
-            <p className="text-[12px] text-slate-400 px-8 font-medium">We guide you through government services. Final applications are always submitted on official government portals.</p>
+          {/* 3 brief feature pills */}
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {[
+              { icon: 'fa-shield-halved', text: i18n.language === 'hi' ? 'आधिकारिक स्रोतों से जानकारी' : 'Info from official sources' },
+              { icon: 'fa-wand-magic-sparkles', text: i18n.language === 'hi' ? 'AI सरल भाषा में समझाए' : 'AI explains in simple language' },
+              { icon: 'fa-file-lines', text: i18n.language === 'hi' ? 'दस्तावेज़ चेकलिस्ट' : 'Document checklist' },
+            ].map(({ icon, text }) => (
+              <div key={text} className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3.5 py-2 text-[12px] font-medium text-slate-700 shadow-sm">
+                <i className={`fa-solid ${icon} text-[13px]`} style={{ color: 'var(--brand-600)' }}/>
+                {text}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Loading overlay */}
+      {/* ── Loading overlay ── */}
       {showOverlay && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-sm" style={{ backgroundColor:'rgba(249,244,234,0.9)' }}>
-          <div className="w-64 text-center glass-panel rounded-[24px] p-8 shadow-glass">
-            <div className="mb-4 flex items-center justify-center h-12">
-              <i className="fa-solid fa-arrows-rotate text-4xl text-brand-500 animate-spin"/>
-            </div>
-            <h3 className="text-[20px] font-bold text-slate-900 mb-2 tracking-tight">Preparing Dashboard...</h3>
-            <p className="text-[13px] text-slate-500 mb-6 font-medium transition-opacity duration-300">{loadingTip}</p>
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center backdrop-blur-sm" style={{ backgroundColor: 'rgba(249,244,234,0.92)' }}>
+          <div className="w-64 text-center glass-panel rounded-[22px] p-8">
+            <i className="fa-solid fa-arrows-rotate text-4xl animate-spin mb-4 block" style={{ color: 'var(--brand-500)' }}/>
+            <h3 className="text-[18px] font-bold text-slate-900 mb-2">{t('login.overlayTitle')}</h3>
+            <p className="text-[12px] text-slate-500 mb-5 transition-opacity duration-300">{loadingTip}</p>
             <div className="h-2 w-full bg-slate-200/70 rounded-full overflow-hidden">
-              <div className="h-full bg-brand-500 rounded-full" style={{ width:`${progress}%`,transition:'width 2s ease-in-out' }}/>
+              <div className="h-full rounded-full" style={{ width: `${progress}%`, background: 'var(--brand-500)', transition: 'width 2s ease-in-out' }}/>
             </div>
           </div>
         </div>

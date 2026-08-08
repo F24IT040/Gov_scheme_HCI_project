@@ -28,12 +28,13 @@ function shouldTryNextModel(error) {
     );
 }
 
-export async function askGemini(prompt, config = {}){
+export async function askGemini(prompt, config = {}, purpose = 'scheme retrieval'){
 
     let lastError = null;
 
     for (const modelName of modelNames) {
         try {
+            console.log(`[gemini] ${purpose} → ${modelName}`);
             const response = await ai.models.generateContent({
                 model: modelName,
                 contents: prompt,

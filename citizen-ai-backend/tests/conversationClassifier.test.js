@@ -8,6 +8,12 @@ test('classifies eligibility-style conversational questions as conversational', 
   assert.equal(isConversationalEligibilityQuestion('can i get a scholarship if i am a student'), true);
 });
 
+test('classifies definition questions as conversational', () => {
+  assert.equal(isConversationalEligibilityQuestion('What is scholarship?'), true);
+  assert.equal(isConversationalEligibilityQuestion('Explain health insurance'), true);
+  assert.equal(isConversationalEligibilityQuestion('Tell me about student loans'), true);
+});
+
 test('keeps direct browse requests as scheme queries', () => {
   assert.equal(isConversationalEligibilityQuestion('show me scholarship schemes for students'), false);
   assert.equal(isConversationalEligibilityQuestion('find me schemes related to farming'), false);
