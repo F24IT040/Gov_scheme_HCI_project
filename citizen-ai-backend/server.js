@@ -13,44 +13,40 @@ const app = express();
 |--------------------------------------------------------------------------
 */
 
-// Production frontend on Vercel + local development
 const allowedOrigins = [
+  // Production frontend
   'https://frontenddeploy-omega.vercel.app',
+
+  // Local development
   'http://localhost:5173',
   'http://127.0.0.1:5173',
 
-  // Also allow the value configured in Railway
+  // Railway environment variable
   process.env.FRONTEND_URL,
 ]
   .filter(Boolean)
-  .map((url) => url.replace(/\/$/, ''));
+  .map((url) => url.trim().replace(/\/$/, ''));
 
 console.log('[CORS] Allowed origins:', allowedOrigins);
 
-function normalizeOrigin(origin) {
-  return origin.replace(/\/$/, '');
-}
-
 const corsOptions = {
   origin(origin, callback) {
-    // Requests without an Origin header:
-    // Postman, curl, server-to-server requests, etc.
+    // Allow requests without Origin header
+    // e.g. Postman, curl, server-to-server
     if (!origin) {
       return callback(null, true);
     }
 
-    const normalizedOrigin = normalizeOrigin(origin);
+    const normalizedOrigin = origin.trim().replace(/\/$/, '');
 
     if (allowedOrigins.includes(normalizedOrigin)) {
       console.log(`[CORS] Allowed origin: ${normalizedOrigin}`);
       return callback(null, true);
     }
 
-    console.error(`[CORS] Blocked origin: ${origin}`);
+    console.error(`[CORS] Blocked origin: ${normalizedOrigin}`);
 
-    return callback(
-      new Error(`Origin not allowed by CORS: ${origin}`)
-    );
+    return callback(null, false);
   },
 
   credentials: true,
@@ -72,9 +68,10 @@ const corsOptions = {
   exposedHeaders: [
     'X-Chat-Handler',
   ],
+
+  optionsSuccessStatus: 204,
 };
 
-// Apply CORS globally
 app.use(cors(corsOptions));
 
 /*
@@ -138,6 +135,21 @@ app.get('/', (_req, res) => {
 
 /*
 |--------------------------------------------------------------------------
+| Deployment Check
+|--------------------------------------------------------------------------
+*/
+
+app.get('/deployment-check', (_req, res) => {
+  res.status(200).json({
+    deployment: 'cors-fix-v4',
+    frontend: 'https://frontenddeploy-omega.vercel.app',
+    backend: 'https://govschemehciproject-production.up.railway.app',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+/*
+|--------------------------------------------------------------------------
 | Start Server
 |--------------------------------------------------------------------------
 */
@@ -148,26 +160,32 @@ app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
 
   console.log(
-    `GROQ_API_KEY: ${process.env.GROQ_API_KEY ? 'SET ✓' : 'MISSING ✗'
+    `GROQ_API_KEY: ${
+      process.env.GROQ_API_KEY ? 'SET ✓' : 'MISSING ✗'
     }`
   );
 
   console.log(
-    `GROQ_MODEL: ${process.env.GROQ_MODEL || 'NOT SET'
+    `GROQ_MODEL: ${
+      process.env.GROQ_MODEL || 'NOT SET'
     }`
   );
 
   console.log(
-    `CONVERSATION_MODEL: ${process.env.GROQ_CONVERSATION_MODEL ||
-    process.env.GROQ_MODEL ||
-    'NOT SET'
+    `CONVERSATION_MODEL: ${
+      process.env.GROQ_CONVERSATION_MODEL ||
+      process.env.GROQ_MODEL ||
+      'NOT SET'
     }`
   );
 
   console.log(
-    `FRONTEND_URL: ${process.env.FRONTEND_URL || 'NOT SET'
+    `FRONTEND_URL: ${
+      process.env.FRONTEND_URL || 'NOT SET'
     }`
   );
+
+  console.log('[CORS] Allowed origins:', allowedOrigins);
 });
 
 /*
