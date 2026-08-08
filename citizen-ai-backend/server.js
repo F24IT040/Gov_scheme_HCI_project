@@ -8,32 +8,35 @@ import { registerAuthRoutes, requireAuth } from './routes/auth.js';
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+function isLocalDevOrigin(origin) {
+  return /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+}
+
+const corsOptions = {
+  credentials: true,
+  origin(origin, callback) {
+    // Allow requests with no Origin header
+    // (Postman, curl, server-to-server, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin) || isLocalDevOrigin(origin)) {
+      return callback(null, true);
+    }
+
+    console.error(`CORS blocked origin: ${origin}`);
+    return callback(new Error(`Origin not allowed by CORS: ${origin}`));
+  },
+};
+
 app.set('trust proxy', 1);
 
-app.use(
-  cors({
-    credentials: true,
-    origin(origin, callback) {
-      // Allow requests with no Origin header
-      // (Postman, curl, server-to-server, etc.)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.error(`CORS blocked origin: ${origin}`);
-      return callback(new Error(`Origin not allowed by CORS: ${origin}`));
-    },
-  })
-);
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
