@@ -9,43 +9,48 @@ const app = express();
 
 /*
 |--------------------------------------------------------------------------
-| CORS
+| CORS Configuration
 |--------------------------------------------------------------------------
 */
 
+// Production frontend on Vercel + local development
 const allowedOrigins = [
-  // Production frontend URL
+  'https://frontenddeploy-omega.vercel.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+
+  // Also allow the value configured in Railway
   process.env.FRONTEND_URL,
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map((url) => url.replace(/\/$/, ''));
 
 console.log('[CORS] Allowed origins:', allowedOrigins);
 
-function isLocalDevOrigin(origin) {
-  return /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+function normalizeOrigin(origin) {
+  return origin.replace(/\/$/, '');
 }
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow requests without an Origin header
-    // (Postman, curl, server-to-server requests)
+    // Requests without an Origin header:
+    // Postman, curl, server-to-server requests, etc.
     if (!origin) {
       return callback(null, true);
     }
 
-    // Allow local development
-    if (isLocalDevOrigin(origin)) {
-      console.log(`[CORS] Allowed local origin: ${origin}`);
-      return callback(null, true);
-    }
+    const normalizedOrigin = normalizeOrigin(origin);
 
-    // Allow configured production frontend
-    if (allowedOrigins.includes(origin)) {
-      console.log(`[CORS] Allowed production origin: ${origin}`);
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      console.log(`[CORS] Allowed origin: ${normalizedOrigin}`);
       return callback(null, true);
     }
 
     console.error(`[CORS] Blocked origin: ${origin}`);
-    return callback(new Error(`Origin not allowed by CORS: ${origin}`));
+
+    return callback(
+      new Error(`Origin not allowed by CORS: ${origin}`)
+    );
   },
 
   credentials: true,
@@ -69,12 +74,12 @@ const corsOptions = {
   ],
 };
 
+// Apply CORS globally
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 /*
 |--------------------------------------------------------------------------
-| Express
+| Express Configuration
 |--------------------------------------------------------------------------
 */
 
@@ -92,7 +97,7 @@ registerAuthRoutes(app);
 
 /*
 |--------------------------------------------------------------------------
-| Chat
+| Chat Route
 |--------------------------------------------------------------------------
 */
 
@@ -120,7 +125,7 @@ app.get('/chat/health', (_req, res) => {
 
 /*
 |--------------------------------------------------------------------------
-| Root
+| Root Route
 |--------------------------------------------------------------------------
 */
 
@@ -133,7 +138,7 @@ app.get('/', (_req, res) => {
 
 /*
 |--------------------------------------------------------------------------
-| Server
+| Start Server
 |--------------------------------------------------------------------------
 */
 
